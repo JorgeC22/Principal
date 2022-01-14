@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Table</title>
+  </head>
+  <body>
+
+    <form action="http://localhost:5000/login" method="POST">
+      <label>correo</label>
+      <input type="text" name="correo" value="">
+      <label>password</label>
+      <input type="text" name="pssd" value="">
+
+      <input type="submit" name="" value="submit">
+    </form>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <p>{{msg}}</p>
+  {% endif %}
+{% endwith %}
+
+</table>
+  </body>
+</html>
