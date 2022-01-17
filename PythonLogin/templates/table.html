@@ -2,25 +2,22 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Table</title>
+    <title>Info</title>
   </head>
   <body>
-
-    <form action="http://localhost:5000/login" method="POST">
-      <label>correo</label>
-      <input type="text" name="correo" value="">
-      <label>password</label>
-      <input type="text" name="pssd" value="">
-
-      <input type="submit" name="" value="submit">
-    </form>
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <p>{{msg}}</p>
-  {% endif %}
-{% endwith %}
-
-</table>
+    <table border="1">
+      <thead>
+        <th>Titulo</th>
+        <th>Año</th>
+      </thead>
+      <tbody>
+        {% for pel in pelis %}
+          <tr>
+            <td>{{pel['titulo']}}</td>
+            <td>{{pel['anio']}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </body>
 </html>

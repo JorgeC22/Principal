@@ -3,32 +3,31 @@ from controlador import mostrar, login_user
 from flask import jsonify
 
 app = Flask(__name__)
+app.secret_key = 'dont tell anyone'
 
 
 @app.route("/")
 def inicio():
-    return render_template('table.html')
+    #flash('Mensaje de prueba!')
+    return render_template('login.html')
 
-@app.route("/read/<empresa>")
-def read(empresa):
+@app.route("/info/<empresa>")
+def info(empresa):
     data = mostrar(empresa)
     #lef = jsonify(data)
     #data = {"name": "jorge","edad": 22}
-    #return render_template('table.html', dpeliculas=lef)
-    return data
-
+    return render_template('table.html', pelis=data)
+    #return data
 
 @app.route("/login", methods = ['POST'])
 def login():
     if request.method == 'POST':
-        firma = login_user(request.form['correo'],request.form['pssd'])
-        if firma['bandera'] == "true":
-            return redirect('/read/'+firma['empresa'] )
+        credenciales = login_user(request.form['correo'],request.form['password'])
+        if credenciales['acceso'] == "true":
+            return redirect('/info/'+credenciales['empresa'] )
         else:
-            #flash("Mensaje de prueba")
-            return "Error: El correo o contraseña son erroneos."
-            #return redirect(url_for('inicio'))
-            #return render_template('/', error=mess)
+            flash("Error: El correo o contraseña son erroneos")
+            return redirect('/')
 
 
 if __name__== "__main__":

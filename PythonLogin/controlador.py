@@ -16,19 +16,19 @@ def mostrar(emp):
             }
             jpel.append(arc)
 
-    return json.dumps(jpel)
+    #return json.dumps(jpel
+    return jpel
 
 
-def login_user(correo, passd):
+def login_user(correo, password):
     conexxion = conect()
-    ll = []
     with conexxion.cursor() as cursor:
         cursor.execute("SELECT * FROM user")
         userdata = cursor.fetchall()
         for x in userdata:
-            if x[1] == correo and x[2] == passd:
-                bandera = { "bandera": "true", "empresa": x[3] }
+            if x[1] == correo and x[2] == password:
+                permiso = { "acceso": "true", "empresa": x[3] }
                 break
             else:
-                bandera = { "bandera": "false", "empresa": None }
-        return bandera
+                permiso = { "acceso": "false", "empresa": None }
+        return permiso
