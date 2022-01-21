@@ -5,8 +5,11 @@
     <title>Bienvenida</title>
   </head>
   <body>
-    <h1>Bienvenido {{ current_user.correo }}</h1>
+    <h1>Bienvenido {{ current_user.username }}</h1>
 
     <a href="{{ url_for('logout') }}">Logout</a>
+
+    <a href="{{ url_for('abonos', distribuidor= current_user.distribuidor) }}">Abonos</a>
+    <a href="{{ url_for('comision', distribuidor= current_user.distribuidor) }}">Comsion</a>
   </body>
 </html>

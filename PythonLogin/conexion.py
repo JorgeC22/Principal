@@ -1,7 +1,8 @@
-import pymysql
+import mariadb
 
 def conect():
-    return pymysql.connect(host='localhost',
+    return mariadb.connect(host='localhost',
                             user='root',
                             password='12345',
-                            db='peliculas')
+                            db='usuarios',
+                            port=3307,)

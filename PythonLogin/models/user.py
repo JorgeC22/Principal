@@ -3,8 +3,9 @@ from flask_login import UserMixin
 class User(UserMixin):
     """docstring fo User."""
 
-    def __init__(self, id, correo, passd, empresa):
+    def __init__(self, id, username, password, distribuidor, grupo_trabajo):
         self.id = id
-        self.correo = correo
-        self.passd = passd
-        self.empresa = empresa
+        self.username = username
+        self.password = password
+        self.distribuidor = distribuidor
+        self.grupo_trabajo = grupo_trabajo

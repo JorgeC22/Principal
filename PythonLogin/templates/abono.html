@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Bienvenida</title>
+  </head>
+  <body>
+    <h1>Pagina de abono para {{current_user.distribuidor}}</h1>
+
+    <a href="{{ url_for('home', distribuidor= current_user.distribuidor) }}">Regresar</a>
+  </body>
+</html>

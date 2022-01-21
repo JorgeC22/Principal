@@ -17,15 +17,40 @@ def inicio():
     #flash('Mensaje de prueba!')
     return render_template('login.html')
 
-@app.route("/home")
+@app.route("/<distribuidor>/home")
 @login_required
-def home():
+def home(distribuidor):
     #data = mostrar(empresa)
     #lef = jsonify(data)
     #data = {"name": "jorge","edad": 22}
     #return render_template('table.html', pelis=data)
     #return data
     return render_template('home.html')
+
+@app.route("/<distribuidor>/home/abonos")
+def abonos(distribuidor):
+    if current_user.is_authenticated:
+        #return current_user.distribuidor
+        return distribuidor
+    else:
+        return redirect('/')
+
+
+@app.route("/<distribuidor>/home/comision")
+def comision(distribuidor):
+    if current_user.is_authenticated:
+        return distribuidor
+    else:
+        return redirect('/')
+
+
+
+"""@app.route("/home/extension")
+def extension():
+    if current_user.is_authenticated:
+        return current_user.distribuidor
+    else:
+        return "no autenticado"""
 
 
 @app.route("/login", methods = ['POST'])
@@ -34,7 +59,7 @@ def login():
         logger_user = loggin_user(request.form['correo'],request.form['password'])
         if logger_user != None:
             login_user(logger_user)
-            return redirect('/home')
+            return redirect('/'+logger_user.distribuidor+'/home')
         else:
             flash("Error: El correo o contraseña son erroneos")
             return redirect('/')

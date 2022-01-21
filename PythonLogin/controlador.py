@@ -32,7 +32,7 @@ def loggin_user(correo, password):
             pass_BD = x[2].encode("utf-8")
             if x[1] == correo and bcrypt.checkpw(password, pass_BD):
                 #permiso = { "acceso": "true", "empresa": x[3] }
-                user = User(x[0],x[1],x[2],x[3])
+                user = User(x[0],x[1],x[2],x[3],x[4])
                 return user
                 break
             else:
@@ -46,7 +46,7 @@ def loader_user(id):
         userdata = cursor.fetchall()
         for x in userdata:
             if userdata != None:
-                return User(x[0],x[1], None,x[3])
+                return User(x[0],x[1], None,x[3],x[4])
             else:
                 return None
 
