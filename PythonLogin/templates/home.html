@@ -1,15 +1,18 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Bienvenida</title>
-  </head>
-  <body>
-    <h1>Bienvenido {{ current_user.username }}</h1>
+{% extends "base.html" %}
 
-    <a href="{{ url_for('logout') }}">Logout</a>
+{% block content %}
 
-    <a href="{{ url_for('abonos', distribuidor= current_user.distribuidor) }}">Abonos</a>
-    <a href="{{ url_for('comision', distribuidor= current_user.distribuidor) }}">Comsion</a>
-  </body>
-</html>
+  <div class="base_home">
+    <h1>Bienvenido {{ current_user.distribuidor }}</h1>
+
+    <div class="base_opciones">
+      <!--<a href="{{ url_for('logout') }}">Logout</a>-->
+      <p>¿Que tipo de movimiento desea consultar?</p>
+      <<div class="base_opc">
+        <a href="{{ url_for('abonos', distribuidor= current_user.distribuidor) }}"><i class="fas fa-barcode"></i>Abonos</a>
+        <a href="{{ url_for('comision', distribuidor= current_user.distribuidor) }}"><i class="fas fa-barcode"></i>Comsion</a>--
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

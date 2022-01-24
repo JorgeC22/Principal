@@ -11,17 +11,18 @@ body{
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
-  z-index: 1;
+
 }
 
 .base_login::after{
+  content: '';
   position: absolute;
   top: 0:
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(170, 170, 170, 0.9);
-  z-index: 2;
+  background: rgba(217, 217, 217, 0.7);
+
 }
 
 .loginbox {
@@ -37,6 +38,7 @@ body{
   padding: 40px 30px;
   box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.55);
   border-radius: 10px;
+  z-index: 3;
 }
 
 h1 {
@@ -92,7 +94,7 @@ h1 {
   height: 40px;
   background: red;
   color: white;
-  font-size: 18px;
+  font-size: 16px;
   border-radius: 20px;
   margin-top: 16px;
 }

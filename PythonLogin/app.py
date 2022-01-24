@@ -3,7 +3,7 @@ from controlador import mostrar, loggin_user, loader_user
 #from flask import jsonify
 from flask_login import LoginManager, current_user,login_user,logout_user,login_required
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 app.secret_key = 'dont tell anyone'
 login_manager_app=LoginManager(app)
 
@@ -31,7 +31,7 @@ def home(distribuidor):
 def abonos(distribuidor):
     if current_user.is_authenticated:
         #return current_user.distribuidor
-        return distribuidor
+        return render_template("abono.html")
     else:
         return redirect('/')
 
@@ -39,7 +39,7 @@ def abonos(distribuidor):
 @app.route("/<distribuidor>/home/comision")
 def comision(distribuidor):
     if current_user.is_authenticated:
-        return distribuidor
+        return render_template("comision.html")
     else:
         return redirect('/')
 
