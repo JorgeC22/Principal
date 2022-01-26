@@ -1,0 +1,21 @@
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Bienvenida</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='estilos_home.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='estilos_platilla_base.css')}}">
+    <script src="https://kit.fontawesome.com/2c36e9b7b1.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="base_cabecera">
+        <a href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+
+    <script type='text/javascript' src="{{ url_for('static', filename='js/data.js') }}"></script>
+  </body>
+</html>

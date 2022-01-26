@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Info</title>
+  </head>
+  <body>
+    <table border="1">
+      <thead>
+        <th>Titulo</th>
+        <th>Año</th>
+      </thead>
+      <tbody>
+        {% for pel in pelis %}
+          <tr>
+            <td>{{pel['titulo']}}</td>
+            <td>{{pel['anio']}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Comision</title>
+  </head>
+  <body>
+    <h1>Pagina de comison para {{current_user.distribuidor}}</h1>
+
+    <a href="{{ url_for('home', distribuidor= current_user.distribuidor) }}">Regresar</a>
+  </body>
+</html>
