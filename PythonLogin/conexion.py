@@ -4,5 +4,5 @@ def conect():
     return mariadb.connect(host='localhost',
                             user='root',
                             password='12345',
-                            db='usuarios',
+                            db='visorusuarios',
                             port=3307,)
