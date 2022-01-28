@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-from controlador import mostrar, loggin_user, loader_user, up_user
+from controlador import actualizar_usuario_consulta, insertar_usuario, mostrar, loggin_user, loader_user, insertar_usuario, obtener_usuarios, eliminar_usuario, actualizar_usuario_consulta
 #from flask import jsonify
 from flask_login import LoginManager, current_user,login_user,logout_user,login_required
+from models.user import User
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = 'dont tell anyone'
@@ -44,7 +45,7 @@ def logout():
 @app.route("/userup", methods = ['POST'])
 def userup():
     if request.method == 'POST':
-        user_alta = up_user(request.form['username'],request.form['password'],request.form['distribuidor'],request.form['grupotrabajo'])
+        user_alta = insertar_usuario(request.form['username'],request.form['password'],request.form['distribuidor'],request.form['grupotrabajo'])
         if user_alta == True:
             flash("Registro correctamente el usuario.")
             return redirect('/altausuario')
@@ -56,11 +57,55 @@ def userup():
 def altausuario():
     return render_template('altauser.html')
 
+@app.route("/red")
+def red():
+    return render_template('red.html')
+
+
+@app.route("/prueba", methods = ['POST','GET'] )
+def prueba():
+    if request.method == 'POST':
+        userr = User(123456,'jorge','1234','myco','social')
+        return render_template('consultauser.html', data = userr)
+    else:
+        return render_template('consultauser.html')
+
+
+@app.route("/consultausuarios", methods=['GET'])
+def consultausuarios():
+    usuarios = obtener_usuarios()
+    res = jsonify(usuarios)
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
+
+@app.route("/listausuarios")
+def listausuarios():
+    return render_template('table.html')
+
+@app.route("/eliminarusuario", methods=['POST'])
+def eliminiarusuario():
+    eliminar_usuario(request.form['identificador'])
+    return render_template('table.html')
+
+@app.route("/<id>/actualizarusuario")
+def actualizarusuario():
+    return render_template('actualizarusuario.html')
+
+
+@app.route("/<id>/consultaactualizar", methods=['POST'])
+def consultaactualizar():
+    usuario = actualizar_usuario_consulta(request.form['identificador'])
+    res = jsonify(usuario)
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 
 
 
-
+@app.route("/arreglo")
+def arreglo():
+    flash("Error: No se pudo registrat el usuario.")
+    return render_template('arreglo.html')
 
 
 

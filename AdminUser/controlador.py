@@ -1,3 +1,5 @@
+from re import X
+from sqlalchemy import sql
 from conexion import conect
 import json
 import bcrypt
@@ -61,20 +63,53 @@ def loader_user(id):
 
 
 
-def up_user(username,password,distribuidor,grupotrabajo):
+def insertar_usuario(username,password,distribuidor,grupotrabajo):
     conexxion = conect()
     with conexxion.cursor() as cursor:
         try:
-            insert_user = "'insert into user values(123455,'"+username+"','"+password+"')"
-            insert_user_distribuidor_gt = "'insert into user_distribuidor_grupotrabajo values(123455,'"+distribuidor+"','"+grupotrabajo+"')"
-            sqls = [insert_user,insert_user_distribuidor_gt]
-            cursor.execute(sqls)
-            cursor.commit()
+            insert_user = "insert into usuarios values(123455,'"+username+"','"+password+"')"
+            insert_user_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo values(123455,'%s','%s')" % (distribuidor,grupotrabajo)
+            sqls = [insert_user, insert_user_distribuidor_gt]
+            for c in sqls:
+                cursor.execute(c)
+            conexxion.commit()
             insert = True
         except:
             insert = False
         
     return insert
+
+
+def obtener_usuarios():
+    conexxion = conect()
+    usuarios = []
+    with conexxion.cursor() as cursor:
+        cursor.execute("""select usuarios.iduser, username, distribuidor, grupo_trabajo 
+                            from usuarios inner join usuario_distribuidor_grupotrabajo 
+                            where usuarios.iduser = usuario_distribuidor_grupotrabajo.iduser""")
+        usuarios = cursor.fetchall()
+    conexxion.close()
+    return usuarios
+
+def eliminar_usuario(iduser):
+    conexxion = conect()
+    with conexxion.cursor() as cursor:
+        delete_user = "delete from usuarios where iduser = "+iduser+""
+        delete_user_distribuidor_grupotrabajo = "delete from usuario_distribuidor_grupotrabajo where iduser = "+iduser+""
+        sqls = [delete_user_distribuidor_grupotrabajo,delete_user]
+        for c in sqls:
+            cursor.execute(c)
+        conexxion.commit()
+    delete = True
+    return delete
+
+def actualizar_usuario_consulta(iduser):
+    conexxion = conect()
+    with conexxion.cursor() as cursor:
+        cursor.execute("select usuarios.iduser, username, distribuidor, grupo_trabajo from usuarios inner join usuario_distribuidor_grupotrabajo where usuarios.iduser = usuario_distribuidor_grupotrabajo.iduser and usuarios.iduser = "+iduser+"")
+        userdata = cursor.fetchall()
+        
+        return userdata
 
 
 """def login_user(correo, password):
