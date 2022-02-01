@@ -1,6 +1,8 @@
 import gnupg
 from ast import Try
 import os
+from paramiko import SSHClient, AutoAddPolicy
+from scp import SCPClient
 
 contenido = os.listdir('.\\ArchivoRecibidos\\')
 
@@ -12,19 +14,19 @@ for x in contenido:
         #Se indica la ruta donde se encuaentra las claves a utilizar
         gpg = gnupg.GPG(gnupghome = 'C:\\Users\\beto_\\Documents\\ServicioSocial\\ArchivoOpen')
         #Se importa clave publica para el descifrado
-        key_data = open('secret-key-DFBF0E94.asc').read()
+        key_data = open('').read()
         import_result = gpg.import_keys(key_data)
         #print(import_result.results)
 
         #Se abre el archivo para cifrar el contenido, si se ubica en otra lado introducir ruta de la ubicacion
         with open('.\\ArchivoRecibidos\\'+x, 'rb') as f:
             #Se descifra el contenido y es introducido en un nuevo archivo
-            status = gpg.decrypt_file(f, passphrase='1cG65xIyJj4Y5E98IRhscNIYP', output= x+'.txt')
+            status = gpg.decrypt_file(f, passphrase='', output= x+'.txt')
 
 
 
         #Se importa clave Toka
-        key_data = open('public-F40B9901.pgp').read()
+        key_data = open('').read()
         import_result = gpg.import_keys(key_data)
         #print(import_result.results)
 
@@ -39,9 +41,18 @@ for x in contenido:
             print ('stderr: ', status.stderr)
 
         os.remove('.\\'+x+'.txt')
+        try:
+            #Se crea una conexion hacia el servidor.
+            ssh = SSHClient()
+            ssh.load_system_host_keys()
+            ssh.connect(hostname='192.168.1.153',username='alberto',password='')
+            #Se crea una instaciona de SCP cliente para el transporte de archivos.
+            with SCPClient(ssh.get_transport()) as scp:
+                scp.put('.\\ArchivoParaEnviar\\'+x, '/home/alberto/ArchivosCifradosToka/'+x) # Copy my_file.txt to the server
+        except:
+            print('No se puede Enviar el archivo.')
     except:
         print('No hay archivo a cifrar.')
-
 
 
 
