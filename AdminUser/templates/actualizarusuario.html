@@ -4,7 +4,7 @@
 
 
 
-    <form class="" action="http://localhost:5000/" method="POST">
+    <form class="" action="" method="POST" id="formulario_update">
         <p>Username</p>
         <input type="text" name="username" value="" placeholder="" class="campodato">
         <p>Distribuidor</p>
@@ -22,5 +22,7 @@
         {% endwith %}
         <input type="submit" name="" value="Actualizar">
   </form>
+
+  <a href="{{ url_for('listausuarios') }}"></a>
 
 {% endblock %}

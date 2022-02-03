@@ -6,7 +6,8 @@ window.onload=function(){
         xhttp.send();
         xhttp.onreadystatechange = function(){
             if(this.readyState==4 && this.status==200){
-                var res = JSON.parse(this.responseText);
+                var json = JSON.parse(this.responseText);
+                
 
                 var encabezado = ['Nombre de Usuario','Distribuidor','Grupo de Trabajo','Editar','Eliminar'];
 
@@ -18,25 +19,25 @@ window.onload=function(){
                     document.getElementById("encabezado").appendChild(columna);
                 }
 
-                for(var items of res){
+                for(var i=0;i<json.length;i++){
                     var renglon = document.createElement("tr");
-                    renglon.setAttribute("id",items[0])
+                    renglon.setAttribute("id",json[i].id)
                     document.getElementById("res").appendChild(renglon);
 
                     var celda = document.createElement("td");
-                    var texto = document.createTextNode(items[1]);
+                    var texto = document.createTextNode(json[i].username);
                     celda.appendChild(texto);
-                    document.getElementById(items[0]).appendChild(celda);
+                    document.getElementById(json[i].id).appendChild(celda);
 
                     var celda = document.createElement("td");
-                    var texto = document.createTextNode(items[2]);
+                    var texto = document.createTextNode(json[i].distribuidor);
                     celda.appendChild(texto);
-                    document.getElementById(items[0]).appendChild(celda);
+                    document.getElementById(json[i].id).appendChild(celda);
 
                     var celda = document.createElement("td");
-                    var texto = document.createTextNode(items[3]);
+                    var texto = document.createTextNode(json[i].grupotrabajo);
                     celda.appendChild(texto);
-                    document.getElementById(items[0]).appendChild(celda);
+                    document.getElementById(json[i].id).appendChild(celda);
 
                     /*var celda = document.createElement("td");
                     var btn = document.createElement("button");
@@ -52,27 +53,26 @@ window.onload=function(){
                     var btn = document.createElement("button");
                     btn.setAttribute("type","button");
                     btn.setAttribute("class","btn btn-sm btn-outline-secondary");
-                    btn.setAttribute("value", items[0]);
-                    btn.setAttribute("id","editar"+items[0]);
-                    btn.setAttribute("onclick","location.href='http://127.0.0.1:5000/altausuario';")
+                    btn.setAttribute("id","editar"+json[i].id);
+                    btn.setAttribute("onclick","location.href='http://127.0.0.1:5000/"+json[i].id+"/actualizarusuario';")
                     celda.appendChild(btn);
                     var texto = document.createTextNode("Editar");
                     btn.appendChild(texto);
-                    document.getElementById(items[0]).appendChild(celda);
+                    document.getElementById(json[i].id).appendChild(celda);
 
                     var celda = document.createElement("td");
                     var form = document.createElement("form");
-                    form.setAttribute("action","http://127.0.0.1:5000/eliminarusuario");
-                    form.setAttribute("method","post");
+                    form.setAttribute('action', 'http://127.0.0.1:5000/eliminarusuario');
+                    form.setAttribute('method', 'POST');
                     celda.appendChild(form);
                     var btn = document.createElement("button");
                     btn.setAttribute("class","btn btn-sm btn-outline-secondary");
-                    btn.setAttribute("name", "identificador");
-                    btn.setAttribute("value", items[0]);
+                    btn.setAttribute('name', 'identificador');
+                    btn.setAttribute('value', json[i].id)
                     form.appendChild(btn);
                     var texto = document.createTextNode("Eliminar");
                     btn.appendChild(texto);
-                    document.getElementById(items[0]).appendChild(celda);
+                    document.getElementById(json[i].id).appendChild(celda);
                 }
 
                 document.getElementById("editar1").addEventListener("click", editarUsuario)
@@ -94,7 +94,7 @@ window.onload=function(){
                     var id = document.createElement("input");
                     id.setAttribute("type","hidden");
                     id.setAttribute("name","id");
-                    id.setAttribute("value","{{"+items[0]+"}}");
+                    id.setAttribute("value","{{"+json[i].id+"}}");
                     document.getElementById("actualizar").appendChild(id);
 
                     var label = document.createElement("label");
@@ -104,7 +104,7 @@ window.onload=function(){
                     document.getElementById("actualizar").appendChild(label);
 
                     var nombre = document.createElement("input");
-                    nombre.setAttribute("value",items[1]);
+                    nombre.setAttribute("value",json[i].username);
                     nombre.setAttribute("type","text");
                     nombre.setAttribute("class","form-control");
                     nombre.setAttribute("placeholder","Nombre");
@@ -120,7 +120,7 @@ window.onload=function(){
                     document.getElementById("actualizar").appendChild(label);
 
                     var contraseña = document.createElement("input");
-                    contraseña.setAttribute("value",items[2]);
+                    contraseña.setAttribute("value",json[i].distribuidor);
                     contraseña.setAttribute("type","text");
                     contraseña.setAttribute("class","form-control");
                     contraseña.setAttribute("placeholder","Contraseña");

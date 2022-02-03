@@ -2,25 +2,29 @@
 
 {% block content %}
 
-    <form class="" action="http://localhost:5000/userup" method="POST">
+    <form id="forminsert" action="http://localhost:5000/insertarusuario" method="POST">
         <p>Username</p>
         <input type="text" name="username" value="" placeholder="example22">
         <p>Password</p>
         <input type="text" name="password" value="" placeholder="*****">
         <p>Distribuidor</p>
         <input type="text" name="distribuidor" value="" placeholder="">
+        <button type="button" id="btnmas">mas</button>
+        <button type="button" id="btnmenos">menos</button> 
         <p>Grupo de trabajo</p>
-        <input type="text" name="grupotrabajo" value="" placeholder="">
+        <input id="campogrupoprincipal" type="text" name="grupotrabajo[]" value="" placeholder="grupo">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
-            <p class="msg_error">{{message}}</p>
+            <p id="msg_error" class="msg_error">{{message}}</p>
             {% endfor %}
         {% else %}
-            <p class="msg_error"></p>
+            <p id="msg_error" class="msg_error"></p>
         {% endif %}
         {% endwith %}
         <input type="submit" name="" value="Registrar">
   </form>
+
+  <a href="{{ url_for('listausuarios') }}"></a>
 
 {% endblock %}

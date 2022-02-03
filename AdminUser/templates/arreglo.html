@@ -2,15 +2,14 @@
 
 {% block content %}
 
-    <form class="" action="http://localhost:5000/userup" method="POST">
-        <p>Username</p>
-        <input type="text" name="username" value="" placeholder="example22">
-        <p>Password</p>
-        <input type="text" name="password" value="" placeholder="*****">
-        <p>Distribuidor</p>
-        <input type="text" name="distribuidor" value="" placeholder="">
+    <form class="" action="http://localhost:5000/farreglo" method="POST">
+        
         <p>Grupo de trabajo</p>
-        <input type="text" name="grupotrabajo" value="" placeholder="">
+        <input type="text" name="grupotrabajo[]" value="" placeholder="">
+        <p>Grupo de trabajo</p>
+        <input type="text" name="grupotrabajo[]" value="" placeholder="">
+        <p>Grupo de trabajo</p>
+        <input type="text" name="grupotrabajo[]" value="" placeholder="">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
