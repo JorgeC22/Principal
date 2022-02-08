@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+    <form class="" action="" method="POST" id="formulario_update">
+        <p>Username</p>
+        <input type="text" name="username" value="" placeholder="" class="campodato">
+        <p>Distribuidor</p>
+        <input type="text" name="distribuidor" value="" placeholder="" class="campodato">
+        <p>Grupo de trabajo</p>
+        <input type="text" name="grupotrabajo" value="" placeholder="" class="campodato">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <p class="msg_error">{{message}}</p>
+            {% endfor %}
+        {% else %}
+            <p class="msg_error"></p>
+        {% endif %}
+        {% endwith %}
+        <input type="submit" name="" value="Actualizar">
+  </form>
+
+  <a href="{{ url_for('listausuarios') }}"></a>
+
+{% endblock %}

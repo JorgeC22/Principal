@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='estilos_login.css')}}">
+  </head>
+  <body>
+
+    <div class="base_login">
+      <div class="loginbox">
+        <h1>Account Login</h1>
+        <form class="" action="http://localhost:5000/login" method="POST">
+          <p>Username</p>
+          <input type="text" name="correo" value="" placeholder="example22">
+          <p>Password</p>
+          <input type="password" name="password" value="" placeholder="*****">
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+                <p class="msg_error">{{message}}</p>
+              {% endfor %}
+            {% else %}
+              <p class="msg_error"></p>
+            {% endif %}
+          {% endwith %}
+          <input type="submit" name="" value="Log In">
+        </form>
+      </div>
+    </div>
+
+    <!--<h1>Login</h1>
+    <form action="http://localhost:5000/login" method="POST">
+      <label>correo</label>
+      <input type="text" name="correo" value="">
+      <label>password</label>
+      <input type="text" name="pssd" value="">
+
+      <input type="submit" name="" value="Iniciar Sesion">
+    </form>
+
+
+-->
+  </body>
+</html>

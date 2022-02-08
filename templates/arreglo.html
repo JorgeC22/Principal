@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form class="" action="http://localhost:5000/farreglo" method="POST">
+        
+        <p>Grupo de trabajo</p>
+        <input type="text" name="grupotrabajo[]" value="" placeholder="">
+        <p>Grupo de trabajo</p>
+        <input type="text" name="grupotrabajo[]" value="" placeholder="">
+        <p>Grupo de trabajo</p>
+        <input type="text" name="grupotrabajo[]" value="" placeholder="">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <p class="msg_error">{{message}}</p>
+            {% endfor %}
+        {% else %}
+            <p class="msg_error"></p>
+        {% endif %}
+        {% endwith %}
+        <input type="submit" name="" value="Registrar">
+  </form>
+
+{% endblock %}

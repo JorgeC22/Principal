@@ -1,0 +1,37 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+
+header{
+  width: 100%;
+  height: 70px;
+}
+
+.base_cabecera{
+  width: 1200px;
+  height: 80px;
+  margin: auto;
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+}
+
+a{
+  padding: 10px 30px;
+  background: red;
+  color: white;
+  border-radius: 5px;
+  border: 1px solid red;
+  text-decoration: none;
+}
+
+a:hover{
+  background: white;
+  color: red;
+}
+
+
+.newClass{
+  color: blue;
+}
