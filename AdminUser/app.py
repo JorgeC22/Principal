@@ -59,10 +59,6 @@ def insertarusuario():
 def altausuario():
     return render_template('altauser.html')
 
-@app.route("/red")
-def red():
-    return render_template('red.html')
-
 
 @app.route("/prueba", methods = ['POST','GET'] )
 def prueba():
@@ -116,16 +112,7 @@ def updateuser(id):
             return redirect('/'+id+'/actualizarusuario')
 
 
-@app.route("/arreglo")
-def arreglo():
-    flash("Error: No se pudo registrat el usuario.")
-    return render_template('arreglo.html')
 
-@app.route("/farreglo", methods = ['POST'])
-def farreglo():
-    arreglo = request.form.getlist('grupotrabajo[]')
-    print(arreglo)
-    return "hola"
 
 
 
