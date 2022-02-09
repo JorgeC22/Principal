@@ -11,23 +11,42 @@ window.onload=function(){
         xhttp.onreadystatechange = function(){
             if(this.readyState==4 && this.status==200){
                 var json = JSON.parse(this.responseText);
+                console.log(json);
                 var URLfuncion = URLactual.replace("actualizarusuario", "updateuser");
                 
-                var campo = document.getElementsByClassName('campodato');
-                var celda = document.getElementById('formulario_update');
-                celda.setAttribute('action', URLfuncion)
+                var form = document.getElementById('formupdate');
+                var elementofinal = document.getElementById('msg_error');
+                var primergrupo = document.getElementById('campogrupoprincipal');
+                var campo = document.querySelectorAll('.campodato')
+                form.setAttribute('action', URLfuncion)
                 
                 for (var i=0;i<json.length;i++){
-                    campo[0].value = json[i].username;
+                    campo[0].value = json[i].nombreusuario;
                     campo[1].value = json[i].distribuidor;
-                    campo[2].value = json[i].grupotrabajo;
-
+                    cont = 2;
+                    if (json[i].grupotrabajo.length > 1){
+                        for (var j in json[i].grupotrabajo){
+                            var pU = document.createElement("p");
+                            pU.setAttribute('id', 'titlecamp');
+                            var texto = document.createTextNode("Grupo Trabajo");
+                            pU.appendChild(texto);
+                            var inp = document.createElement("input");
+                            inp.setAttribute('id', 'campogrupo');
+                            inp.setAttribute('name', 'grupotrabajo[]');
+                            inp.value = json[i].grupotrabajo[j];
+                            form.insertBefore(inp,campo[1]);
+                            form.insertBefore(pU,inp);
+                            //campo[cont].value = json[i].grupotrabajo[j];
+                            cont++;
+                        }
+                    }
                 }
                 
             }
         };
     }
 }
+
 
 
 

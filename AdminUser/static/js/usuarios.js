@@ -7,9 +7,10 @@ window.onload=function(){
         xhttp.onreadystatechange = function(){
             if(this.readyState==4 && this.status==200){
                 var json = JSON.parse(this.responseText);
+                console.log(json);
                 
 
-                var encabezado = ['Nombre de Usuario','Distribuidor','Grupo de Trabajo','Editar','Eliminar'];
+                var encabezado = ['Nombre de Usuario','Contraseña','Distribuidor','Grupo de Trabajo','Ruta','Editar','Eliminar'];
 
                 for(var i of encabezado){
                     var columna = document.createElement("th");
@@ -21,23 +22,33 @@ window.onload=function(){
 
                 for(var i=0;i<json.length;i++){
                     var renglon = document.createElement("tr");
-                    renglon.setAttribute("id",json[i].id)
+                    renglon.setAttribute("id",json[i].id+'_'+i)
                     document.getElementById("res").appendChild(renglon);
 
                     var celda = document.createElement("td");
-                    var texto = document.createTextNode(json[i].username);
+                    var texto = document.createTextNode(json[i].nombre_usuario);
                     celda.appendChild(texto);
-                    document.getElementById(json[i].id).appendChild(celda);
+                    document.getElementById(json[i].id+'_'+i).appendChild(celda);
+
+                    var celda = document.createElement("td");
+                    var texto = document.createTextNode(json[i].contraseña);
+                    celda.appendChild(texto);
+                    document.getElementById(json[i].id+'_'+i).appendChild(celda);
 
                     var celda = document.createElement("td");
                     var texto = document.createTextNode(json[i].distribuidor);
                     celda.appendChild(texto);
-                    document.getElementById(json[i].id).appendChild(celda);
+                    document.getElementById(json[i].id+'_'+i).appendChild(celda);
 
                     var celda = document.createElement("td");
                     var texto = document.createTextNode(json[i].grupotrabajo);
                     celda.appendChild(texto);
-                    document.getElementById(json[i].id).appendChild(celda);
+                    document.getElementById(json[i].id+'_'+i).appendChild(celda);
+
+                    var celda = document.createElement("td");
+                    var texto = document.createTextNode(json[i].ruta);
+                    celda.appendChild(texto);
+                    document.getElementById(json[i].id+'_'+i).appendChild(celda);
 
                     /*var celda = document.createElement("td");
                     var btn = document.createElement("button");
@@ -58,7 +69,7 @@ window.onload=function(){
                     celda.appendChild(btn);
                     var texto = document.createTextNode("Editar");
                     btn.appendChild(texto);
-                    document.getElementById(json[i].id).appendChild(celda);
+                    document.getElementById(json[i].id+'_'+i).appendChild(celda);
 
                     var celda = document.createElement("td");
                     var form = document.createElement("form");
@@ -72,7 +83,7 @@ window.onload=function(){
                     form.appendChild(btn);
                     var texto = document.createTextNode("Eliminar");
                     btn.appendChild(texto);
-                    document.getElementById(json[i].id).appendChild(celda);
+                    document.getElementById(json[i].id+'_'+i).appendChild(celda);
                 }
 
                 document.getElementById("editar1").addEventListener("click", editarUsuario)

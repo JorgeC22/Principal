@@ -4,25 +4,29 @@
 
 
 
-    <form class="" action="" method="POST" id="formulario_update">
-        <p>Username</p>
+    <form class="" action="" method="POST" id="formupdate">
+        <p>Nombre Usuario</p>
         <input type="text" name="username" value="" placeholder="" class="campodato">
+        <p>Contraseña</p>
+        <input type="text" name="distribuidor" value="" placeholder="" class="campodato">
         <p>Distribuidor</p>
         <input type="text" name="distribuidor" value="" placeholder="" class="campodato">
-        <p>Grupo de trabajo</p>
-        <input type="text" name="grupotrabajo" value="" placeholder="" class="campodato">
+        <!--<p>Grupo de trabajo</p>
+        <input type="text" name="grupotrabajo[]" value="" placeholder="" id="campogrupoprincipal">-->
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
-            <p class="msg_error">{{message}}</p>
+            <p id="msg_error" class="msg_error">{{message}}</p>
             {% endfor %}
         {% else %}
-            <p class="msg_error"></p>
+            <p id="msg_error" class="msg_error"></p>
         {% endif %}
         {% endwith %}
         <input type="submit" name="" value="Actualizar">
-  </form>
+    </form>
 
-  <a href="{{ url_for('listausuarios') }}"></a>
+    <a href="{{ url_for('listausuarios') }}"></a>
+
+    <script type='text/javascript' src="{{ url_for('static', filename='js/actualizarconsulta.js') }}"></script>
 
 {% endblock %}

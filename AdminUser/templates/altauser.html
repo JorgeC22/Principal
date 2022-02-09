@@ -23,8 +23,10 @@
         {% endif %}
         {% endwith %}
         <input type="submit" name="" value="Registrar">
-  </form>
+    </form>
 
-  <a href="{{ url_for('listausuarios') }}"></a>
+    <a href="{{ url_for('listausuarios') }}"></a>
 
+
+    <script type='text/javascript' src="{{ url_for('static', filename='js/altausuario.js') }}"></script>
 {% endblock %}

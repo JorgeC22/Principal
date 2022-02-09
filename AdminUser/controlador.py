@@ -1,3 +1,4 @@
+from calendar import c
 import imp
 from re import X
 from turtle import update
@@ -61,62 +62,65 @@ def loader_user(id):
                 break
             else:
                 user = None
-        
         return user
 
-
-
-def insertar_usuario(username,password,distribuidor,grupotrabajo):
+def insertar_usuario(username,password):
     passencode = password.encode("utf-8")
     pass_seg_encode = bcrypt.hashpw(passencode, bcrypt.gensalt())
     pass_segura = pass_seg_encode.decode()
-
-
- 
     conexxion = conect()
-    with conexxion.cursor() as cursor:
-        try:
-            sqls = []
-            insert_user = "insert into usuarios values(123455,'"+username+"','"+pass_segura+"')"
-            sqls.append(insert_user)
-            if grupotrabajo:
-                for r in grupotrabajo:
-                    insert_user_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo values(123455,'%s','%s')" % (distribuidor,r)
-                    sqls.append(insert_user_distribuidor_gt)
-            else:
-                insert_user_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo values(123455,'%s','')" % (distribuidor)
-                sqls.append(insert_user_distribuidor_gt)
-            for c in sqls:
-                cursor.execute(c)
+    try:
+        with conexxion.cursor() as cursor:
+            cursor.execute("insert into usuarios values('"+username+"','"+pass_segura+"')")
             conexxion.commit()
             insert = True
-        except:
-            insert = False
-        
+    except:
+        insert = False
     return insert
 
+def insertar_usuario_distribuidor_grupo(username,distribuidor,grupotrabajo):
+    conexxion = conect()
+    try:
+        with conexxion.cursor(dictionary = True) as cursor:
+            cursor.execute("select * from usuarios where nombre_usuario = '%s'" % username)
+            usuario = cursor.fetchone()
+
+            if grupotrabajo:
+                for r in grupotrabajo:
+                     cursor.execute("insert into usuario_distribuidor_grupotrabajo values('%s','%s','%s')" % (usuario['id_usuario'],distribuidor,r))
+            else:
+                cursor.execute("insert into usuario_distribuidor_grupotrabajo values('%s','%s','')" % (usuario['id_usuario'],distribuidor))
+            
+            insert = True
+    except:
+        insert = False
+    return insert
 
 def obtener_usuarios():
     conexxion = conect()
     data = []
     with conexxion.cursor() as cursor:
-        cursor.execute("""select usuarios.iduser, username, distribuidor, grupo_trabajo 
-                            from usuarios inner join usuario_distribuidor_grupotrabajo 
-                            where usuarios.iduser = usuario_distribuidor_grupotrabajo.iduser""")
+        cursor.execute("""
+                        select u.id_usuario, u.nombre_usuario, u.contraseña, udg.distribuidor, udg.grupo_trabajo, ur.ruta 
+                        from usuarios u 
+	                        join usuario_ruta ur on u.id_usuario  = ur.id_usuario 
+	                        join usuario_distribuidor_grupotrabajo udg on ur.id_usuario = udg.id_usuario""")
         usuarios = cursor.fetchall()
         for i in usuarios:
-            if(i[3]==None):
+            if(i[4]==None):
                 gtrabajo = " " 
             else:
-                gtrabajo = i[3]
+                gtrabajo = i[4]
 
             idencode = str(i[0]).encode()
             hashID = hashlib.new("sha1",idencode)
             json = {
                         "id": hashID.hexdigest(),
-                        "username": i[1],
-                        "distribuidor": i[2],
-                        "grupotrabajo": gtrabajo
+                        "nombre_usuario": i[1],
+                        "contraseña": i[2],
+                        "distribuidor": i[3],
+                        "grupotrabajo": gtrabajo,
+                        "ruta": i[5]
                     }
             data.append(json)
     return data
@@ -152,16 +156,34 @@ def verificarhash(hashiduser):
 def consulta_actualizar(id):
     conexxion = conect()
     data = []
+    json = {}
     with conexxion.cursor() as cursor:
-        cursor.execute("select username, distribuidor, grupo_trabajo from usuarios inner join usuario_distribuidor_grupotrabajo where usuarios.iduser = usuario_distribuidor_grupotrabajo.iduser and usuarios.iduser = "+str(id)+"")
+        cursor.execute("select nombre_usuario, distribuidor, grupo_trabajo from usuarios inner join usuario_distribuidor_grupotrabajo where usuarios.id_usuario = usuario_distribuidor_grupotrabajo.id_usuario and usuarios.id_usuario = "+str(id)+"")
         userdata = cursor.fetchall()
-        for x in userdata:
-            json = {
-                "username": x[0],
-                "distribuidor": x[1],
-                "grupotrabajo": x[2]
-            }
-            data.append(json)
+        c = 1
+        if len(userdata) > 1:
+            for x in userdata:
+                if not json:
+                    json = {
+                    "nombreusuario": x[0],
+                    "distribuidor": x[1],
+                    "grupotrabajo": {
+                            "gt%s" % c: x[2]
+                        }
+                    }
+                    c = c + 1
+                else:
+                    json['grupotrabajo']['gt%s' % c] = x[2]
+                    c = c + 1
+        else:
+            for x in userdata:
+                json = {
+                    "nombreusuario": x[0],
+                    "distribuidor": x[1],
+                    "grupotrabajo": x[2]
+                }
+        
+        data.append(json)
     return data
 
 

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-from controlador import actualizar_usuario, verificarhash, consulta_actualizar, insertar_usuario, mostrar, loggin_user, loader_user, insertar_usuario, obtener_usuarios, eliminar_usuario
+from controlador import *
 #from flask import jsonify
 from flask_login import LoginManager, current_user,login_user,logout_user,login_required
 from models.user import User
@@ -47,17 +47,28 @@ def insertarusuario():
     if request.method == 'POST':
         data = request.values
         print(data)
-        user_alta = insertar_usuario(request.form['username'],request.form['password'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
+        user_alta = insertar_usuario(request.form['username'],request.form['password'])
         if user_alta == True:
-            flash("Registro correctamente el usuario.")
-            return redirect('/altausuario')
+            distribuidor_grupoTrabajo = insertar_usuario_distribuidor_grupo(request.form['username'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
+            
+            if distribuidor_grupoTrabajo == True:
+                flash("Registro correctamente el usuario.")
+                return redirect('/altausuario')
+            else:
+                flash("Error: No se pudo registrar el usuario.")
+                return redirect('/altausuario')
         else:
-            flash("Error: No se pudo registrat el usuario.")
+            flash("Error: No se pudo registrar el usuario.")
             return redirect('/altausuario')
+
 
 @app.route("/altausuario")
 def altausuario():
     return render_template('altauser.html')
+
+@app.route("/red")
+def red():
+    return render_template('red.html')
 
 
 @app.route("/prueba", methods = ['POST','GET'] )
@@ -80,11 +91,18 @@ def consultausuarios():
 def listausuarios():
     return render_template('table.html')
 
+
+
+
+
 @app.route("/eliminarusuario", methods=['POST'])
 def eliminiarusuario():
     iduser_original = verificarhash(request.form['identificador'])
     eliminar_usuario(iduser_original)
     return redirect('/listausuarios')
+
+
+
 
 @app.route("/<id>/actualizarusuario")
 def actualizarusuario(id):
@@ -113,6 +131,19 @@ def updateuser(id):
 
 
 
+
+
+
+@app.route("/arreglo")
+def arreglo():
+    flash("Error: No se pudo registrat el usuario.")
+    return render_template('arreglo.html')
+
+@app.route("/farreglo", methods = ['POST'])
+def farreglo():
+    arreglo = request.form.getlist('grupotrabajo[]')
+    print(arreglo)
+    return "hola"
 
 
 
