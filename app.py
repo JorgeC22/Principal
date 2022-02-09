@@ -135,9 +135,6 @@ def farreglo():
     print(arreglo)
     return "hola"
 
-
-
-
 @app.errorhandler(401)
 def status_401(error):
     return redirect('/')
