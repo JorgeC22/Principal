@@ -1,10 +1,10 @@
-import mariadb
+import mysql.connector
 
 def conect():
-    return mariadb.connect(
+    return mysql.connector.connect(
             host="localhost",
-            port= 3307,
+            port= 3306,
             user="root",
-            passwd="1234",
+            passwd="281200",
             database="usuarios"
     )

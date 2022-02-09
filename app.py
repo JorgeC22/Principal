@@ -45,8 +45,8 @@ def logout():
 @app.route("/insertarusuario", methods = ['POST'])
 def insertarusuario():
     if request.method == 'POST':
-        data = request.values
-        print(data)
+        #data = request.values
+        #print(data)
         user_alta = insertar_usuario(request.form['username'],request.form['password'])
         if user_alta == True:
             distribuidor_grupoTrabajo = insertar_usuario_distribuidor_grupo(request.form['username'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
@@ -94,13 +94,15 @@ def listausuarios():
 @app.route("/eliminarusuario", methods=['POST'])
 def eliminiarusuario():
     iduser_original = verificarhash(request.form['identificador'])
-    eliminar_usuario(iduser_original)
+    grupoTrabajo = request.form['identificador']
+    print(iduser_original)
+    print(grupoTrabajo)
+    #eliminar_usuario(iduser_original)
     return redirect('/listausuarios')
 
 @app.route("/<id>/actualizarusuario")
 def actualizarusuario(id):
     return render_template('actualizarusuario.html')
-
 
 @app.route("/<id>/consultaactualizar", methods=['GET'])
 def consultaactualizar(id):
@@ -121,7 +123,6 @@ def updateuser(id):
         else:
             flash("Error: No se pudo registrat el usuario.")
             return redirect('/'+id+'/actualizarusuario')
-
 
 @app.route("/arreglo")
 def arreglo():

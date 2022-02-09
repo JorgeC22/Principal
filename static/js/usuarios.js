@@ -10,7 +10,7 @@ window.onload=function(){
                 console.log(json);
                 
 
-                var encabezado = ['Nombre de Usuario','Contraseña','Distribuidor','Grupo de Trabajo','Ruta','Editar','Eliminar'];
+                var encabezado = ['Nombre de Usuario','Distribuidor','Grupo de Trabajo','Editar','Eliminar'];
 
                 for(var i of encabezado){
                     var columna = document.createElement("th");
@@ -31,11 +31,6 @@ window.onload=function(){
                     document.getElementById(json[i].id+'_'+i).appendChild(celda);
 
                     var celda = document.createElement("td");
-                    var texto = document.createTextNode(json[i].contraseña);
-                    celda.appendChild(texto);
-                    document.getElementById(json[i].id+'_'+i).appendChild(celda);
-
-                    var celda = document.createElement("td");
                     var texto = document.createTextNode(json[i].distribuidor);
                     celda.appendChild(texto);
                     document.getElementById(json[i].id+'_'+i).appendChild(celda);
@@ -44,21 +39,6 @@ window.onload=function(){
                     var texto = document.createTextNode(json[i].grupotrabajo);
                     celda.appendChild(texto);
                     document.getElementById(json[i].id+'_'+i).appendChild(celda);
-
-                    var celda = document.createElement("td");
-                    var texto = document.createTextNode(json[i].ruta);
-                    celda.appendChild(texto);
-                    document.getElementById(json[i].id+'_'+i).appendChild(celda);
-
-                    /*var celda = document.createElement("td");
-                    var btn = document.createElement("button");
-                    btn.setAttribute("type","button");
-                    btn.setAttribute("class","btn btn-sm btn-outline-secondary");
-                    btn.setAttribute("href","{{url_for('movimientoUsuario', nombre="+i[1]+")}}");
-                    celda.appendChild(btn);
-                    var texto = document.createTextNode("Obtener");
-                    btn.appendChild(texto);
-                    document.getElementById(items[0]).appendChild(celda);*/
 
                     var celda = document.createElement("td");
                     var btn = document.createElement("button");
@@ -79,7 +59,8 @@ window.onload=function(){
                     var btn = document.createElement("button");
                     btn.setAttribute("class","btn btn-sm btn-outline-secondary");
                     btn.setAttribute('name', 'identificador');
-                    btn.setAttribute('value', json[i].id)
+                    btn.setAttribute('id', json[i].id)
+                    btn.setAttribute('value', json[i].grupotrabajo)
                     form.appendChild(btn);
                     var texto = document.createTextNode("Eliminar");
                     btn.appendChild(texto);

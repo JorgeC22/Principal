@@ -4,7 +4,6 @@ window.onload=function(){
         let URLactual = document.URL;
         var URLnew = URLactual.replace("actualizarusuario", "consultaactualizar");
         
-
         var xhttp = new XMLHttpRequest();
         xhttp.open('GET',URLnew, true);
         xhttp.send();
@@ -21,7 +20,6 @@ window.onload=function(){
                     campo[0].value = json[i].username;
                     campo[1].value = json[i].distribuidor;
                     campo[2].value = json[i].grupotrabajo;
-
                 }
                 
             }
