@@ -134,16 +134,7 @@ def updateuser(id):
 
 
 
-@app.route("/arreglo")
-def arreglo():
-    flash("Error: No se pudo registrat el usuario.")
-    return render_template('arreglo.html')
 
-@app.route("/farreglo", methods = ['POST'])
-def farreglo():
-    arreglo = request.form.getlist('grupotrabajo[]')
-    print(arreglo)
-    return "hola"
 
 
 
