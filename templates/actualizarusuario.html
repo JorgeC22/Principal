@@ -1,24 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
-    <form class="" action="" method="POST" id="formulario_update">
-        <p>Username</p>
-        <input type="text" name="username" value="" placeholder="" class="campodato">
-        <p>Distribuidor</p>
-        <input type="text" name="distribuidor" value="" placeholder="" class="campodato">
-        <p>Grupo de trabajo</p>
-        <input type="text" name="grupotrabajo" value="" placeholder="" class="campodato">
+  <div class="container pt-4">
+    <form id="formulario_update" action="" method="POST">
+        <div class="mb-3">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Nombre usuario</label>
+            <input type="text" class="form-control" name="username">
+        </div>
+        <div class="mb-3">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Distribuidor</label>
+            <input type="text" class="form-control" name="distribuidor">
+        </div>
+        <div class="mb-3">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Grupo trabajo</label>
+            <input type="text" class="form-control" name="grupotrabajo">
+        </div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
-            <p class="msg_error">{{message}}</p>
+            <p id="msg_error" class="msg_error text-danger">{{message}}</p>
             {% endfor %}
         {% else %}
-            <p class="msg_error"></p>
+            <p id="msg_error" class="msg_error text-danger"></p>
         {% endif %}
         {% endwith %}
-        <input type="submit" name="" value="Actualizar">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <input class="btn btn-primary" type="submit" value="Actualizar">
+            <a class="btn btn-success" href="{{ url_for('listausuarios') }}" role="button">Regresar</a>
+        </div>
   </form>
-
-  <a href="{{ url_for('listausuarios') }}"></a>
-
+</div>
 {% endblock %}

@@ -62,9 +62,10 @@ btnmas.addEventListener('click', () => {
     var elementofinal = document.getElementById('msg_error');
     var pU = document.createElement("p");
     pU.setAttribute('id', 'titlecamp');
-    var texto = document.createTextNode("Grupo Trabajo");
+    var texto = document.createTextNode("Grupo trabajo");
     pU.appendChild(texto);
     var inp = document.createElement("input");
+    inp.setAttribute('class','form-control')
     inp.setAttribute('id', 'campogrupo');
     inp.setAttribute('name', 'grupotrabajo[]');
     form.insertBefore(inp,elementofinal);

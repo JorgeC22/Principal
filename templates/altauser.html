@@ -2,29 +2,42 @@
 
 {% block content %}
 
+
+<div class="container pt-4">
     <form id="forminsert" action="http://localhost:5000/insertarusuario" method="POST">
-        <p>Username</p>
-        <input type="text" name="username" value="" placeholder="example22">
-        <p>Password</p>
-        <input type="text" name="password" value="" placeholder="*****">
-        <p>Distribuidor</p>
-        <input type="text" name="distribuidor" value="" placeholder="">
-        <button type="button" id="btnmas">mas</button>
-        <button type="button" id="btnmenos">menos</button> 
-        <p>Grupo de trabajo</p>
-        <input id="campogrupoprincipal" type="text" name="grupotrabajo[]" value="" placeholder="grupo">
+        <div class="mb-3">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Nombre usuario</label>
+            <input type="text" class="form-control" name="username">
+        </div>
+        <div class="mb-3">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Contraseña</label>
+            <input type="text" class="form-control" name="password">
+        </div>
+        <div class="mb-3">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Distribuidor</label>
+            <input type="text" class="form-control" name="distribuidor">
+        </div>
+        <div class="mb-3">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Grupo trabajo</label>
+            <div class="input-group col-sm-10">
+                <input id="campogrupoprincipal" type="text" class="form-control" name="grupotrabajo[]">
+                <button class="btn btn-outline-secondary" type="button" id="btnmas">Mas</button>
+                <button class="btn btn-outline-secondary" type="button" id="btnmenos">Menos</button>
+            </div>
+        </div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
-            <p id="msg_error" class="msg_error">{{message}}</p>
+            <p id="msg_error" class="msg_error text-danger">{{message}}</p>
             {% endfor %}
         {% else %}
-            <p id="msg_error" class="msg_error"></p>
+            <p id="msg_error" class="msg_error text-danger"></p>
         {% endif %}
         {% endwith %}
-        <input type="submit" name="" value="Registrar">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <input class="btn btn-primary" type="submit" value="Registrar">
+            <a class="btn btn-success" href="{{ url_for('listausuarios') }}" role="button">Regresar</a>
+        </div>
   </form>
-
-  <a href="{{ url_for('listausuarios') }}"></a>
-
+</div>
 {% endblock %}
