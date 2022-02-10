@@ -10,7 +10,7 @@ window.onload=function(){
                 console.log(json);
                 
 
-                var encabezado = ['Nombre de Usuario','Distribuidor','Grupo de Trabajo','Editar','Eliminar'];
+                var encabezado = ['Nombre usuario','Distribuidor','Grupo de trabajo','Editar','Eliminar'];
 
                 for(var i of encabezado){
                     var columna = document.createElement("th");
@@ -36,7 +36,7 @@ window.onload=function(){
                     document.getElementById(json[i].id+'_'+i).appendChild(celda);
 
                     var celda = document.createElement("td");
-                    var texto = document.createTextNode(json[i].grupotrabajo);
+                    var texto = document.createTextNode(json[i].grupo_trabajo);
                     celda.appendChild(texto);
                     document.getElementById(json[i].id+'_'+i).appendChild(celda);
 
@@ -59,8 +59,7 @@ window.onload=function(){
                     var btn = document.createElement("button");
                     btn.setAttribute("class","btn btn-sm btn-outline-secondary");
                     btn.setAttribute('name', 'identificador');
-                    btn.setAttribute('id', json[i].id)
-                    btn.setAttribute('value', json[i].grupotrabajo)
+                    btn.setAttribute('value', json[i].id)
                     form.appendChild(btn);
                     var texto = document.createTextNode("Eliminar");
                     btn.appendChild(texto);

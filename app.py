@@ -18,12 +18,6 @@ def inicio():
     #flash('Mensaje de prueba!')
     return render_template('login.html')
 
-
-
-
-
-
-
 @app.route("/login", methods = ['POST'])
 def login():
     if request.method == 'POST':
@@ -45,12 +39,9 @@ def logout():
 @app.route("/insertarusuario", methods = ['POST'])
 def insertarusuario():
     if request.method == 'POST':
-        #data = request.values
-        #print(data)
         user_alta = insertar_usuario(request.form['username'],request.form['password'])
         if user_alta == True:
             distribuidor_grupoTrabajo = insertar_usuario_distribuidor_grupo(request.form['username'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
-            
             if distribuidor_grupoTrabajo == True:
                 flash("Registro correctamente el usuario.")
                 return redirect('/altausuario')
@@ -93,11 +84,7 @@ def listausuarios():
 
 @app.route("/eliminarusuario", methods=['POST'])
 def eliminiarusuario():
-    iduser_original = verificarhash(request.form['identificador'])
-    grupoTrabajo = request.form['identificador']
-    print(iduser_original)
-    print(grupoTrabajo)
-    #eliminar_usuario(iduser_original)
+    eliminar_usuario(request.form['identificador'])
     return redirect('/listausuarios')
 
 @app.route("/<id>/actualizarusuario")

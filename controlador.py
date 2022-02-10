@@ -99,66 +99,31 @@ def insertar_usuario_distribuidor_grupo(username,distribuidor,grupotrabajo):
 
 def obtener_usuarios():
     conexxion = conect()
-    data = []
-    with conexxion.cursor() as cursor:
-        cursor.execute("""
-                        select u.id_usuario, u.nombre_usuario, udg.distribuidor, udg.grupo_trabajo
-                        from usuarios u 
-	                        join usuario_distribuidor_grupotrabajo udg on u.id_usuario = udg.id_usuario""")
+    with conexxion.cursor(dictionary=True) as cursor:
+        cursor.execute("""select udg.id, u.id_usuario, u.nombre_usuario,udg.distribuidor, udg.grupo_trabajo 
+                            from usuario_distribuidor_grupotrabajo udg 
+	                        join usuarios u on udg.id_usuario = u.id_usuario""")
         usuarios = cursor.fetchall()
         for i in usuarios:
-            if(i[3]==None):
-                gtrabajo = " " 
+            if(i['grupo_trabajo']==None):
+                i['grupo_trabajo'] = " " 
             else:
-                gtrabajo = i[3]
-            idencode = str(i[0]).encode()
-            hashID = hashlib.new("sha1",idencode)
-            json = {
-                        "id": hashID.hexdigest(),
-                        "nombre_usuario": i[1],
-                        "distribuidor": i[2],
-                        "grupotrabajo": gtrabajo
-                    }
-            data.append(json)
-    return data
+                i['grupo_trabajo'] = i['grupo_trabajo']
+    return usuarios
 
-def eliminar_usuario(id_usuario):
+def eliminar_usuario(iduser):
     conexxion = conect()
-    with conexxion.cursor(dictionary = True) as cursor:
-        cursor.execute(""" SELECT udg.distribuidor
-                            FROM usuarios u 
-	                            join usuario_distribuidor_grupotrabajo udg on u.id_usuario = udg.id_usuario  
-                            WHERE u.id_usuario = %s""" % id_usuario)
-        distribuidor = cursor.fetchone()
-
-        cursor.execute("""SELECT u.id_usuario, u.nombre_usuario, udg.distribuidor, udg.grupo_trabajo 
-                            FROM usuarios u 
-	                            join usuario_distribuidor_grupotrabajo udg on u.id_usuario = udg.id_usuario  
-                            WHERE udg.distribuidor  = '%s'""" % distribuidor)
-        registros = cursor.fetchall()
-
-        if registros == []:
-            cursor.execute("DELETE FROM usuarios WHERE id_usuario = %s" %registros['id_usuario'])
-        else:
-            cursor.execute("DELETE FROM usuario_distribuidor_grupotrabajo WHERE  = ")
-
-
-        '''
-        delete_user = "delete from usuarios where id_usuario = "
-        delete_user_distribuidor_grupotrabajo = "delete from usuario_distribuidor_grupotrabajo where id_usuario = "+iduser+""
-        sqls = [delete_user_distribuidor_grupotrabajo,delete_user]
-        for c in sqls:
-            cursor.execute(c)
+    with conexxion.cursor() as cursor:
+        cursor.execute("delete from usuario_distribuidor_grupotrabajo where id = %s" %iduser)
         conexxion.commit()
-        '''
-    delete = True
+        delete = True
     return delete
 
 def verificarhash(hashiduser):
     conexxion = conect()
     data = []
     with conexxion.cursor() as cursor:
-        cursor.execute("select * from usuarios")
+        cursor.execute("select * from usuario_distribuidor_grupotrabajo")
         listuser = cursor.fetchall()
         for i in listuser:
             idencode = str(i[0]).encode()
