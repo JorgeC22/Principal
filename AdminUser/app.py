@@ -47,16 +47,10 @@ def insertarusuario():
     if request.method == 'POST':
         data = request.values
         print(data)
-        user_alta = insertar_usuario(request.form['username'],request.form['password'])
+        user_alta = insertar_usuario(request.form['username'],request.form['password'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
         if user_alta == True:
-            distribuidor_grupoTrabajo = insertar_usuario_distribuidor_grupo(request.form['username'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
-            
-            if distribuidor_grupoTrabajo == True:
-                flash("Registro correctamente el usuario.")
-                return redirect('/altausuario')
-            else:
-                flash("Error: No se pudo registrar el usuario.")
-                return redirect('/altausuario')
+            flash("Registro correctamente el usuario.")
+            return redirect('/altausuario')
         else:
             flash("Error: No se pudo registrar el usuario.")
             return redirect('/altausuario')
@@ -121,7 +115,7 @@ def consultaactualizar(id):
 def updateuser(id):
     if request.method == 'POST':
         iduser_original = verificarhash(id)
-        user_update = actualizar_usuario(iduser_original,request.form['username'],request.form['distribuidor'],request.form['grupotrabajo'])
+        user_update = actualizar_usuario(iduser_original,request.form['username'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
         if user_update == True:
             flash("Registro correctamente el usuario.")
             return redirect('/'+id+'/actualizarusuario')
@@ -134,7 +128,16 @@ def updateuser(id):
 
 
 
+@app.route("/arreglo")
+def arreglo():
+    flash("Error: No se pudo registrat el usuario.")
+    return render_template('arreglo.html')
 
+@app.route("/farreglo", methods = ['POST'])
+def farreglo():
+    arreglo = request.form.getlist('grupotrabajo[]')
+    print(arreglo)
+    return "hola"
 
 
 

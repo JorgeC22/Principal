@@ -7,7 +7,7 @@ window.onload=function(){
         xhttp.onreadystatechange = function(){
             if(this.readyState==4 && this.status==200){
                 var json = JSON.parse(this.responseText);
-                console.log(json);
+                
                 
 
                 var encabezado = ['Nombre de Usuario','Contraseña','Distribuidor','Grupo de Trabajo','Ruta','Editar','Eliminar'];

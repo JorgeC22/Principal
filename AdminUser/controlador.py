@@ -2,12 +2,13 @@ from calendar import c
 import imp
 from re import X
 from turtle import update
-from sqlalchemy import sql
+from sqlalchemy import sql, true
 from conexion import conect
 import json
 import bcrypt
 from models.user import User
 import hashlib
+import uuid
 
 
 def mostrar():
@@ -64,36 +65,35 @@ def loader_user(id):
                 user = None
         return user
 
-def insertar_usuario(username,password):
+def insertar_usuario(username,password,distribuidor,grupotrabajo):
+    id_usuario = str(uuid.uuid4())
+    
     passencode = password.encode("utf-8")
     pass_seg_encode = bcrypt.hashpw(passencode, bcrypt.gensalt())
     pass_segura = pass_seg_encode.decode()
-    conexxion = conect()
-    try:
-        with conexxion.cursor() as cursor:
-            cursor.execute("insert into usuarios values('"+username+"','"+pass_segura+"')")
-            conexxion.commit()
-            insert = True
-    except:
-        insert = False
-    return insert
 
-def insertar_usuario_distribuidor_grupo(username,distribuidor,grupotrabajo):
-    conexxion = conect()
-    try:
-        with conexxion.cursor(dictionary = True) as cursor:
-            cursor.execute("select * from usuarios where nombre_usuario = '%s'" % username)
-            usuario = cursor.fetchone()
 
+ 
+    conexxion = conect()
+    with conexxion.cursor() as cursor:
+        try:
+            sqls = []
+            insert_user = "insert into usuarios values('"+id_usuario+"','"+username+"','"+pass_segura+"')"
+            sqls.append(insert_user)
             if grupotrabajo:
                 for r in grupotrabajo:
-                     cursor.execute("insert into usuario_distribuidor_grupotrabajo values('%s','%s','%s')" % (usuario['id_usuario'],distribuidor,r))
+                    insert_user_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo values('%s','%s','%s')" % (id_usuario,distribuidor,r)
+                    sqls.append(insert_user_distribuidor_gt)
             else:
-                cursor.execute("insert into usuario_distribuidor_grupotrabajo values('%s','%s','')" % (usuario['id_usuario'],distribuidor))
-            
+                insert_user_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo (id_usuario,distribuidor) values('%s','%s')" % (id_usuario,distribuidor)
+                sqls.append(insert_user_distribuidor_gt)
+            for c in sqls:
+                cursor.execute(c)
+            conexxion.commit()
             insert = True
-    except:
-        insert = False
+        except:
+            insert = False
+        
     return insert
 
 def obtener_usuarios():
@@ -128,9 +128,10 @@ def obtener_usuarios():
 def eliminar_usuario(iduser):
     conexxion = conect()
     with conexxion.cursor() as cursor:
-        delete_user = "delete from usuarios where iduser = "+str(iduser)+""
-        delete_user_distribuidor_grupotrabajo = "delete from usuario_distribuidor_grupotrabajo where iduser = "+str(iduser)+""
-        sqls = [delete_user_distribuidor_grupotrabajo,delete_user]
+        delete_usuario = "delete from usuarios where id_usuario = "+str(iduser)+""
+        delete_usuario_distribuidor_grupotrabajo = "delete from usuario_distribuidor_grupotrabajo where id_usuario = "+str(iduser)+""
+        delete_usuario_ruta = "delete from usuario_ruta where id_usuario = "+str(iduser)+""
+        sqls = [delete_usuario_ruta,delete_usuario_distribuidor_grupotrabajo,delete_usuario]
         for c in sqls:
             cursor.execute(c)
         conexxion.commit()
@@ -160,21 +161,21 @@ def consulta_actualizar(id):
     with conexxion.cursor() as cursor:
         cursor.execute("select nombre_usuario, distribuidor, grupo_trabajo from usuarios inner join usuario_distribuidor_grupotrabajo where usuarios.id_usuario = usuario_distribuidor_grupotrabajo.id_usuario and usuarios.id_usuario = "+str(id)+"")
         userdata = cursor.fetchall()
-        c = 1
+        
         if len(userdata) > 1:
             for x in userdata:
                 if not json:
                     json = {
                     "nombreusuario": x[0],
                     "distribuidor": x[1],
-                    "grupotrabajo": {
-                            "gt%s" % c: x[2]
-                        }
+                    "grupotrabajo": [{
+                            "grupo": x[2]
+                        }]
                     }
-                    c = c + 1
+                    
                 else:
-                    json['grupotrabajo']['gt%s' % c] = x[2]
-                    c = c + 1
+                    grupo = {"grupo": x[2]}
+                    json['grupotrabajo'].append(grupo)
         else:
             for x in userdata:
                 json = {
@@ -188,18 +189,21 @@ def consulta_actualizar(id):
 
 
 def actualizar_usuario(id,username,distribuidor,grupotrabajo):
-    conexxion = conect()
-    with conexxion.cursor() as cursor:
-        try:
-            update_user = "update usuarios set username='"+username+"' where iduser = "+str(id)+""
-            update_user_distribuidor_gt = "update usuario_distribuidor_grupotrabajo set distribuidor='"+distribuidor+"', grupo_trabajo='"+grupotrabajo+"' where iduser = "+str(id)+""
-            sqls = [update_user, update_user_distribuidor_gt]
-            for c in sqls:
-                cursor.execute(c)
-            conexxion.commit()
-            update = True
-        except:
-            update = False
+    try:
+        conexxion = conect()
+        with conexxion.cursor() as cursor:
+            cursor.execute("update usuarios set nombre_usuario="+username+" where id_usuario = "+str(id)+"")
+            if not grupotrabajo:
+                cursor.execute("insert into usuario_distribuidor_grupotrabajo (id_usuario,distribuidor) values('%s','%s')" % (id,distribuidor))
+            else:
+                for dato in grupotrabajo:
+                    cursor.execute("insert into usuario_distribuidor_grupotrabajo values('%s','%s','%s')" % (id,distribuidor,dato))
+        
+        conexxion.commit()
+        update = True
+    except:
+        update = False
+
     return update
 
 """def login_user(correo, password):
