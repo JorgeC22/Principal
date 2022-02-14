@@ -1,4 +1,4 @@
-window.onload = () => {
+/*window.onload = () => {
     var tit = document.getElementById('titulo');
     var elemento = document.getElementById('baset');
 
@@ -8,4 +8,4 @@ window.onload = () => {
 
     //tit.classList.add('newClass');
     tit.innerText = URLnew;
-}
+}*/

@@ -4,12 +4,10 @@
 
     <form class="" action="http://localhost:5000/farreglo" method="POST">
         
+        
         <p>Grupo de trabajo</p>
-        <input type="text" name="grupotrabajo[]" value="" placeholder="">
-        <p>Grupo de trabajo</p>
-        <input type="text" name="grupotrabajo[]" value="" placeholder="">
-        <p>Grupo de trabajo</p>
-        <input type="text" name="grupotrabajo[]" value="" placeholder="">
+        <input type="text" name="grupotrabajo" value="" placeholder="">
+        <input type="hidden" name="idrelacion" value="valordeprueba" placeholder="">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}

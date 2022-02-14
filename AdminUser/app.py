@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from controlador import *
 #from flask import jsonify
 from flask_login import LoginManager, current_user,login_user,logout_user,login_required
@@ -135,9 +135,16 @@ def arreglo():
 
 @app.route("/farreglo", methods = ['POST'])
 def farreglo():
-    arreglo = request.form.getlist('grupotrabajo[]')
-    print(arreglo)
-    return "hola"
+    session['idrelacion'] = request.form['idrelacion']
+    session['grupotrabajo'] = request.form['grupotrabajo']
+    #print(arreglo)
+    return redirect('garreglo')
+
+@app.route("/garreglo")
+def garreglo():
+    
+    #print(arreglo)
+    return "Datos almacenados en sesion: "+str(session.get('grupotrabajo'))+", y "+str(session.get('idrelacion'))
 
 
 

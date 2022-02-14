@@ -9,6 +9,8 @@ import bcrypt
 from models.user import User
 import hashlib
 import uuid
+import random
+import string
 
 
 def mostrar():
@@ -72,7 +74,7 @@ def insertar_usuario(username,password,distribuidor,grupotrabajo):
     pass_seg_encode = bcrypt.hashpw(passencode, bcrypt.gensalt())
     pass_segura = pass_seg_encode.decode()
 
-
+    ruta_usuario = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(10) )
  
     conexxion = conect()
     with conexxion.cursor() as cursor:
@@ -80,6 +82,8 @@ def insertar_usuario(username,password,distribuidor,grupotrabajo):
             sqls = []
             insert_user = "insert into usuarios values('"+id_usuario+"','"+username+"','"+pass_segura+"')"
             sqls.append(insert_user)
+            insert_user_ruta = "insert into usuario_ruta values('"+id_usuario+"','"+ruta_usuario+"')"
+            sqls.append(insert_user_ruta)
             if grupotrabajo:
                 for r in grupotrabajo:
                     insert_user_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo values('%s','%s','%s')" % (id_usuario,distribuidor,r)
@@ -112,7 +116,7 @@ def obtener_usuarios():
             else:
                 gtrabajo = i[4]
 
-            idencode = str(i[0]).encode()
+            idencode = i[0].encode()
             hashID = hashlib.new("sha1",idencode)
             json = {
                         "id": hashID.hexdigest(),
@@ -145,7 +149,7 @@ def verificarhash(hashiduser):
         cursor.execute("select * from usuarios")
         listuser = cursor.fetchall()
         for i in listuser:
-            idencode = str(i[0]).encode()
+            idencode = i[0].encode()
             hashIDlocal = hashlib.new("sha1",idencode)
             if hashIDlocal.hexdigest() == hashiduser:
                 idsearch = i[0]
@@ -159,7 +163,7 @@ def consulta_actualizar(id):
     data = []
     json = {}
     with conexxion.cursor() as cursor:
-        cursor.execute("select nombre_usuario, distribuidor, grupo_trabajo from usuarios inner join usuario_distribuidor_grupotrabajo where usuarios.id_usuario = usuario_distribuidor_grupotrabajo.id_usuario and usuarios.id_usuario = "+str(id)+"")
+        cursor.execute("select nombre_usuario, distribuidor, grupo_trabajo from usuarios inner join usuario_distribuidor_grupotrabajo where usuarios.id_usuario = usuario_distribuidor_grupotrabajo.id_usuario and usuarios.id_usuario = '"+id+"'")
         userdata = cursor.fetchall()
         
         if len(userdata) > 1:
@@ -192,7 +196,10 @@ def actualizar_usuario(id,username,distribuidor,grupotrabajo):
     try:
         conexxion = conect()
         with conexxion.cursor() as cursor:
-            cursor.execute("update usuarios set nombre_usuario="+username+" where id_usuario = "+str(id)+"")
+            cursor.execute("update usuarios set nombre_usuario='"+username+"' where id_usuario = '"+id+"'")
+
+            cursor.execute("delete from usuario_distribuidor_grupotrabajo where id_usuario = '"+id+"'")
+
             if not grupotrabajo:
                 cursor.execute("insert into usuario_distribuidor_grupotrabajo (id_usuario,distribuidor) values('%s','%s')" % (id,distribuidor))
             else:
