@@ -99,16 +99,29 @@ def insertar_usuario_distribuidor_grupo(username,distribuidor,grupotrabajo):
 
 def obtener_usuarios():
     conexxion = conect()
-    with conexxion.cursor(dictionary=True) as cursor:
-        cursor.execute("""select udg.id, u.id_usuario, u.nombre_usuario,udg.distribuidor, udg.grupo_trabajo 
-                            from usuario_distribuidor_grupotrabajo udg 
+    usuarios = []
+    with conexxion.cursor() as cursor:
+        cursor.execute("""select udg.id, 
+                            u.id_usuario, 
+                            u.nombre_usuario,
+                            udg.distribuidor, 
+                            udg.grupo_trabajo 
+                        from usuario_distribuidor_grupotrabajo udg 
 	                        join usuarios u on udg.id_usuario = u.id_usuario""")
-        usuarios = cursor.fetchall()
-        for i in usuarios:
-            if(i['grupo_trabajo']==None):
-                i['grupo_trabajo'] = " " 
+        data = cursor.fetchall()
+        for i in data:
+            if(i[4] == None):
+                gtrabajo = " " 
             else:
-                i['grupo_trabajo'] = i['grupo_trabajo']
+                gtrabajo = i[4]
+            json = {
+                        "id": i[0],
+                        "id_usuario": i[1],
+                        "nombre_usuario": i[2],
+                        "distribuidor": i[3],
+                        "grupo_trabajo": gtrabajo
+                    }
+            usuarios.append(json)
     return usuarios
 
 def eliminar_usuario(iduser):
@@ -137,22 +150,27 @@ def verificarhash(hashiduser):
 
 def consulta_actualizar(id):
     conexxion = conect()
-    data = []
+    usuario = []
     with conexxion.cursor() as cursor:
-        cursor.execute("""
-            select u.nombre_usuario, udg.distribuidor, udg.grupo_trabajo 
-            from usuarios u 
-                inner join usuario_distribuidor_grupotrabajo udg on u.id_usuario = udg.id_usuario  
-            where u.id_usuario = %s""" % id)
+        cursor.execute("""select udg.id, 
+                            u.id_usuario, 
+                            u.nombre_usuario,
+                            udg.distribuidor, 
+                            udg.grupo_trabajo 
+                        from usuario_distribuidor_grupotrabajo udg 
+	                        join usuarios u on udg.id_usuario = u.id_usuario
+                        where udg.id=%s""" % id)
         userdata = cursor.fetchall()
-        for x in userdata:
+        for i in userdata:
             json = {
-                "username": x[0],
-                "distribuidor": x[1],
-                "grupotrabajo": x[2]
+                "id": i[0],
+                "id_usuario": i[1],
+                "nombre_usuario": i[2],
+                "distribuidor": i[3],
+                "grupo_trabajo": i[4]
             }
-            data.append(json)
-    return data
+            usuario.append(json)
+    return usuario
 
 
 def actualizar_usuario(id,username,distribuidor,grupotrabajo):

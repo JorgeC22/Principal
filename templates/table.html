@@ -5,20 +5,41 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <h1 class="h3">Usuarios</h1>
       <div class="btn-toolbar mb-2 mb-md-0">
-        <button type="button" class="btn btn-sm btn-outline-secondary" id="agregar" onclick="location.href='http://127.0.0.1:5000/altausuario';">Agregar</button>
+        <button type="button" class="btn btn-sm btn-primary" id="agregar" onclick="location.href='http://127.0.0.1:5000/altausuario';">Agregar</button>
       </div>
     </div>
 
     <div class="table-responsive">
       <table class="table table-striped table-sm" id="tabla">
         <thead>
-          <tr id="encabezado">
-            </tr>
+          <tr>
+            <th>Nombre usuario</th>
+            <th>Distribuidor</th>
+            <th>Grupo trabajo</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+          </tr>
         </thead>
-        <tbody id="res">
+        <tbody>
+          {% for usuario in usuarios %}
+          <tr>
+            <td>{{usuario['nombre_usuario']}}</td>
+            <td>{{usuario['distribuidor']}}</td>
+            <td>{{usuario['grupo_trabajo']}}</td>
+            <td>
+              <a class="btn btn-sm btn-success" href="{{ url_for('actualizarusuario', id = usuario['id']) }}" role="button">Editar</a>
+            </td>
+            <td>
+              <form action="{{ url_for('eliminarusuario')}}" method="POST">
+                <input type="hidden" name="id" value="{{usuario['id']}}">
+                <button class="btn btn-sm btn-danger">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
       </table>
-      </div>
+    </div>
   </main>
 
 {% endblock %}

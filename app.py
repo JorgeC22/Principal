@@ -71,45 +71,42 @@ def prueba():
         return render_template('consultauser.html')
 
 
-@app.route("/consultausuarios", methods=['GET'])
-def consultausuarios():
-    usuarios = obtener_usuarios()
-    res = jsonify(usuarios)
-    res.headers.add('Access-Control-Allow-Origin', '*')
-    return res
-
 @app.route("/listausuarios")
 def listausuarios():
-    return render_template('table.html')
+    usuarios = obtener_usuarios()
+    return render_template('table.html', usuarios=usuarios)
 
 @app.route("/eliminarusuario", methods=['POST'])
 def eliminiarusuario():
-    eliminar_usuario(request.form['identificador'])
+    eliminar_usuario(request.form["id"])
     return redirect('/listausuarios')
 
-@app.route("/<id>/actualizarusuario")
+@app.route("/formulario_actualizarusuario/<int:id>")
 def actualizarusuario(id):
-    return render_template('actualizarusuario.html')
-
-@app.route("/<id>/consultaactualizar", methods=['GET'])
+    usuario = consulta_actualizar(id)
+    return render_template('actualizarusuario.html',usuario=usuario)
+'''
+@app.route("/<id>/actualizarusuario", methods=['GET'])
 def consultaactualizar(id):
     iduser_original = verificarhash(id)
     usuario = consulta_actualizar(iduser_original)
     res = jsonify(usuario)
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
-
-@app.route("/<id>/updateuser", methods = ['POST'])
+'''
+@app.route("/actualizarusuario", methods = ['POST'])
 def updateuser(id):
-    if request.method == 'POST':
-        iduser_original = verificarhash(id)
-        user_update = actualizar_usuario(iduser_original,request.form['username'],request.form['distribuidor'],request.form['grupotrabajo'])
-        if user_update == True:
-            flash("Registro correctamente el usuario.")
-            return redirect('/'+id+'/actualizarusuario')
-        else:
-            flash("Error: No se pudo registrat el usuario.")
-            return redirect('/'+id+'/actualizarusuario')
+    id = request.form["id"]
+    nombre_usuario = request.form["nombre_usuario"]
+    distribuidor = request.form["distribuidor"]
+    grupo_trabajo = request.form["grupo_trabajo"]
+    user_update = actualizar_usuario(id,nombre_usuario,distribuidor,grupo_trabajo)
+    if user_update == True:
+        flash("Registro correctamente el usuario.")
+        return redirect('/actualizarusuario/'+id)
+    else:
+        flash("Error: No se pudo registrat el usuario.")
+        return redirect('/actualizarusuario/'+id)
 
 @app.route("/arreglo")
 def arreglo():

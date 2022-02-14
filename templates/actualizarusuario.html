@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
   <div class="container pt-4">
-    <form id="formulario_update" action="" method="POST">
+    <form action="{{url_for('actualizarusuario')}}" method="POST">
+        <input type="hidden" name="id" value="{{usuario['id']}}">
         <div class="mb-3">
-            <label for="inputPassword" class="col-sm-2 col-form-label">Nombre usuario</label>
-            <input type="text" class="form-control" name="username">
+            <label for="nombre_usuario" class="col-sm-2 col-form-label">Nombre usuario</label>
+            <input required type="text" class="input" name="nombre_usuario" id="nombre_usuario" value="{{usuario['nombre_usuario']}}">
         </div>
         <div class="mb-3">
-            <label for="inputPassword" class="col-sm-2 col-form-label">Distribuidor</label>
-            <input type="text" class="form-control" name="distribuidor">
+            <label for="distribuidor" class="col-sm-2 col-form-label">Distribuidor</label>
+            <input required type="text" class="input" name="distribuidor" id="nombre_usuario" value="{{usuario['distribuidor']}}">
         </div>
         <div class="mb-3">
-            <label for="inputPassword" class="col-sm-2 col-form-label">Grupo trabajo</label>
-            <input type="text" class="form-control" name="grupotrabajo">
+            <label for="grupo_trabajo" class="col-sm-2 col-form-label">Grupo trabajo</label>
+            <input required type="text" class="input" name="grupo_trabajo" id="grupo_trabajo" value="{{usuario['grupo_trabajo']}}">
         </div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
