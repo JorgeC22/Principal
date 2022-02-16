@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--Referencia Bootstrap CSS-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!--Referencia Bootstrap Bundle with Popper-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1">Navbar</span>
+        </div>
+    </nav>
+    <div class="container pt-4">
+        <form action="http://127.0.0.1:5000/formulario" method="POST">
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Nombre Titular</label>
+                <input type="text" name="nombre_titular" class="form-control" id="exampleFormControlInput1" placeholder="name">
+                <label for="exampleFormControlInput1" class="form-label">Numero de Tarjeta Origen</label>
+                <input type="number" name="tarjeta_origen" class="form-control" id="exampleFormControlInput1" placeholder="1111-1111-1111-1111">
+            </div>
+                
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Fecha Vencimiento</label>
+                <input type="text" name="fecha_vencimiento" class="form-control" id="exampleFormControlInput1" placeholder="MM/YY">
+                <label for="exampleFormControlInput1" class="form-label">Codigo de seguridad</label>
+                <input type="number" name="cvv_origen" class="form-control" id="exampleFormControlInput1" placeholder="111">
+                <label for="exampleFormControlInput1" class="form-label">Monto a Transferir</label>
+                <input type="number" name="monto" class="form-control" id="exampleFormControlInput1" placeholder="">
+                <label for="exampleFormControlInput1" class="form-label">Numero de Tarjeta Destino</label>
+                <input type="number" name="tarjeta_destino" class="form-control" id="exampleFormControlInput1" placeholder="1111-1111-1111-1111">
+            </div>
+            <button type="submit">Transferir</button>
+        </form>
+    </div>
+</body>
+</html>
