@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>AlquimiPay</title>
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container1">
+                <a class="navbar-brand" href="#page-top"><img src="{{ url_for('static', filename='assets/img/logo-alquimia-pay.png') }}" alt="..." /></a>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                   
+                </div>
+            </div>
+        </nav>
+        <!-- Masthead-->
+        <header class="masthead">
+            <div class="container">
+                <div class="masthead-subheading">Bienvenido a AlquimiaPAy...</div>
+               
+            </div>
+            <a class="btn btn-primary btn-xl text-uppercase" href="#form">Tranferir</a>
+        </header>
+            
+        <!-- Form-->
+        <section class="page-section" id="form">
+    <div class="container">
+      <div class="col1">
+        <div class="card">
+          <div class="front">
+            <div class="type">
+              <img class="bankid"/>
+            </div>
+            <span class="chip"></span>
+            <span class="card_number">&#x25CF;&#x25CF;&#x25CF;&#x25CF; &#x25CF;&#x25CF;&#x25CF;&#x25CF; &#x25CF;&#x25CF;&#x25CF;&#x25CF; &#x25CF;&#x25CF;&#x25CF;&#x25CF; </span>
+            <div class="date"><span class="date_value">MM / YYYY</span></div>
+            <span class="fullname">NOMBRE COMPLETO</span>
+          </div>
+          <div class="back">
+            <div class="magnetic"></div>
+            <div class="bar"></div>
+            <span class="seccode">&#x25CF;&#x25CF;&#x25CF;</span>
+            <span class="chip"></span><span class="disclaimer">AlquimiaPAy</span>
+          </div>
+        </div>
+      </div>
+      <div class="col2">
+        <form action="{{ url_for('formulario') }}" method="POST">
+          <label>Correo Electronico</label>
+          <input name="email" class="inputmail" type="email"  maxlength="50"/>
+          <label>Numero de Tarjeta</label>
+          <input name="tarjeta_origen" class="number" type="text" ng-model="ncard" maxlength="20" onkeypress='return event.charCode >= 48 && event.charCode <= 57'/>
+          <label>Nombre del Titular</label>
+          <input name="nombre_titular" class="inputname" type="text" placeholder=""/>
+          <label>Fecha de expiracion</label>
+          <input name="fecha_vencimiento" class="expire" type="text" placeholder="MM / YYYY"/>
+          <label>codigo de seguridad</label>
+          <input name="cvc_origen" class="ccv" type="number" placeholder="CVC" maxlength="3" onkeypress='return event.charCode >= 48 && event.charCode <= 57'/>
+          <label>Monto a Pagar</label>
+          <input name="monto" class="inputamount" type="number" id="currency-field" value="" placeholder="1,000,000.00">
+          <label>Tarjeta destino</label>
+          <input name="tarjeta_destino" class="number" type="text"  maxlength="20" placeholder="5252 5252 5252 52525" />
+          <button type="submit" class="buy"><i class="material-icons">lock</i> Pagar</button>
+        </form>
+      </div>
+    </div>
+    <!-- partial -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script><script  src="js/script.js"></script>
+    
+        </section>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    </body>
+</html>
