@@ -12,7 +12,11 @@ app = Flask(__name__)
 def index():
     #flash('Mensaje de prueba!')
     return render_template('index.html')
-    
+
+@app.route("/cargo")
+def cargo():
+    #flash('Mensaje de prueba!')
+    return render_template('vacio.html')
 
 @app.route("/formulario", methods = ['POST'])
 def formulario():
