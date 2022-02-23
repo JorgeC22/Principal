@@ -1,0 +1,11 @@
+#Comando para la creacion de Email Template "mytemplate.json"
+aws ses send-templated-email --cli-input-json file://myemail.json
+
+#Comando para el envio de correo utilizando un Email Template "myemail.json"
+aws ses send-templated-email --cli-input-json file://myemail.json
+
+
+nota: para el envio de correo se necesita que tanto el remitente y el destinatario esten verificados en la plataforma de AWS.
+
+
+

@@ -1,0 +1,9 @@
+{
+  "Source":"beto-jorge1@hotmail.com",
+  "Template": "MyTemplate",
+  "Destination": {
+    "ToAddresses": ["alberth1824@hotmail.com"
+    ]
+  },
+  "TemplateData": "{ \"name\":\"Alejandro\", \"favoriteanimal\": \"alligator\" }"
+}

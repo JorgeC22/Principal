@@ -1,0 +1,8 @@
+{
+  "Template": {
+    "TemplateName": "MyTemplate",
+    "SubjectPart": "Prueba AWS",
+    "HtmlPart": "<p>Estimado cliente, le informamos que ha realizado la siguiente operación:</p><ul><li>Codigo de Transaccion: <b>12656494358468</b></li><li>Transferencia de: <b>Jorge Cervantes</b></li><li>Num. Tarjeta Origen: <b>*****4957</b></li><li>Fecha de realizacion: <b>22/02/2022</b></li><li>Num. Tarjeta Destino: <b>*****2873</b></li><li>Importe: <b>$ 1000.00</b></li></ul><p>Este mensaje fue originado automaticamente. Por favor no responder al mismo.</p>",
+    "TextPart": "Dear User,\r\nBienvenido al envio de Correos AWS."
+  }
+}
