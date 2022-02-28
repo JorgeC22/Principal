@@ -6,18 +6,6 @@ from models.user import User
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = 'dont tell anyone'
-login_manager_app=LoginManager(app)
-
-@login_manager_app.user_loader
-def load_user(id):
-    return loader_user(id)
-
-
-@app.route("/")
-def inicio():
-    #flash('Mensaje de prueba!')
-    return render_template('login.html')
-
 
 
 
