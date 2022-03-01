@@ -1,10 +1,4 @@
-from calendar import c
-import imp
-from re import X
-from turtle import update
-from sqlalchemy import sql, true
 from conexion import conect
-import json
 import bcrypt
 from models.user import User
 import hashlib
@@ -13,61 +7,8 @@ import random
 import string
 
 
-def mostrar():
-    conexxion = conect()
-    jpel = []
-    with conexxion.cursor() as cursor:
-        cursor.execute("SELECT * FROM user" )
-        peliculas = cursor.fetchall()
-        for resp in peliculas:
-            arc = {
-                "id": resp[0],
-                "username": resp[1],
-                "password": resp[2],
-                "distribuidor": resp[3],
-                "grupo_trabajo": resp[4]
-            }
-            jpel.append(arc)
 
-    #return json.dumps(jpel)
-    return jpel
-
-
-def loggin_user(correo, password):
-    password = password.encode("utf-8")
-    conexxion = conect()
-    with conexxion.cursor() as cursor:
-        cursor.execute("""select user.iduser, username, password, distribuidor, grupo_trabajo 
-                            from user inner join user_distribuidor_grupotrabajo 
-                            where user.iduser = user_distribuidor_grupotrabajo.iduser""")
-        userdata = cursor.fetchall()
-        for x in userdata:
-            pass_BD = x[2].encode("utf-8")
-            if x[1] == correo and bcrypt.checkpw(password, pass_BD):
-                #permiso = { "acceso": "true", "empresa": x[3] }
-                user = User(x[0],x[1],x[2], x[3], x[4])
-                break
-            else:
-                #permiso = { "acceso": "false", "empresa": None }
-                user = None
-    return user
-
-def loader_user(id):
-    conexxion = conect()
-    with conexxion.cursor() as cursor:
-        cursor.execute("""select user.iduser, username, distribuidor, grupo_trabajo 
-                            from user inner join user_distribuidor_grupotrabajo 
-                            where user.iduser = user_distribuidor_grupotrabajo.iduser and user.iduser = '%s'""" % id)
-        userdata = cursor.fetchall()
-        for x in userdata:
-            if userdata != None:
-                user = User(x[0],x[1],None,x[2],x[3])
-                break
-            else:
-                user = None
-        return user
-
-def insertar_usuario(username,password,distribuidor,grupotrabajo):
+def insertar_usuario(username,password,DistribuidorGrupoTrabajo):
     id_usuario = str(uuid.uuid4())
     
     passencode = password.encode("utf-8")
@@ -76,29 +17,48 @@ def insertar_usuario(username,password,distribuidor,grupotrabajo):
 
     ruta_usuario = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(10) )
  
-    conexxion = conect()
-    with conexxion.cursor() as cursor:
-        try:
+    
+    try:
+        conexxion = conect()
+        with conexxion.cursor() as cursor:
             sqls = []
             insert_user = "insert into usuarios values('"+id_usuario+"','"+username+"','"+pass_segura+"')"
             sqls.append(insert_user)
             insert_user_ruta = "insert into usuario_ruta values('"+id_usuario+"','"+ruta_usuario+"')"
             sqls.append(insert_user_ruta)
-            if grupotrabajo:
-                for r in grupotrabajo:
-                    insert_user_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo values('%s','%s','%s')" % (id_usuario,distribuidor,r)
+
+            for dg in DistribuidorGrupoTrabajo:
+                if dg['grupotrabajo'] != None:
+                    insert_user_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo (id_usuario,distribuidor,grupo_trabajo) values('%s','%s','%s')" % (id_usuario,dg['distribuidor'],dg['grupotrabajo'])
                     sqls.append(insert_user_distribuidor_gt)
-            else:
-                insert_user_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo (id_usuario,distribuidor) values('%s','%s')" % (id_usuario,distribuidor)
-                sqls.append(insert_user_distribuidor_gt)
+                else:
+                    insert_user_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo (id_usuario,distribuidor) values('%s','%s')" % (id_usuario,dg["distribuidor"])
+                    sqls.append(insert_user_distribuidor_gt)
             for c in sqls:
                 cursor.execute(c)
-            conexxion.commit()
-            insert = True
-        except:
-            insert = False
+        conexxion.commit()
+        insert = True
+    except:
+        insert = False
         
     return insert
+
+def relacionDistribuidroGrupoTrabajo(distribuidores,gruposTrabajos):
+    datajson = []
+    for number in range(0,len(distribuidores)):
+        
+        if gruposTrabajos[number] == "":
+            json = {"distribuidor": distribuidores[number],"grupotrabajo": None}
+            datajson.append(json)
+        else:
+            json = {"distribuidor": distribuidores[number],"grupotrabajo": gruposTrabajos[number]}
+            datajson.append(json)
+
+    return datajson
+
+
+
+
 
 def obtener_usuarios():
     conexxion = conect()
@@ -116,7 +76,7 @@ def obtener_usuarios():
             else:
                 gtrabajo = i[4]
 
-            idencode = i[0].encode()
+            idencode = str(i[0]).encode()
             hashID = hashlib.new("sha1",idencode)
             json = {
                         "id": hashID.hexdigest(),
@@ -158,34 +118,67 @@ def verificarhash(hashiduser):
                 idsearch = None
     return idsearch
 
+
+
+def verificarhashrelacion(hashidrelacion):
+    conexxion = conect()
+    data = []
+    with conexxion.cursor() as cursor:
+        cursor.execute("select * from usuario_distribuidor_grupotrabajo")
+        listuser = cursor.fetchall()
+        for i in listuser:
+            idencode = str(i[0]).encode()
+            hashIDlocal = hashlib.new("sha1",idencode)
+            if hashIDlocal.hexdigest() == hashidrelacion:
+                idsearch = i[0]
+                break
+            else:
+                idsearch = None
+    return idsearch
+
+
 def consulta_actualizar(id):
     conexxion = conect()
     data = []
     json = {}
     with conexxion.cursor() as cursor:
-        cursor.execute("select nombre_usuario, distribuidor, grupo_trabajo from usuarios inner join usuario_distribuidor_grupotrabajo where usuarios.id_usuario = usuario_distribuidor_grupotrabajo.id_usuario and usuarios.id_usuario = '"+id+"'")
+        cursor.execute("select id_distribuidor_grupotrabajo, nombre_usuario, distribuidor, grupo_trabajo from usuarios inner join usuario_distribuidor_grupotrabajo where usuarios.id_usuario = usuario_distribuidor_grupotrabajo.id_usuario and usuarios.id_usuario = '"+id+"'")
         userdata = cursor.fetchall()
         
         if len(userdata) > 1:
+            
             for x in userdata:
+
+                idRencode = str(x[0]).encode()
+                hashIDrelacion = hashlib.new("sha1",idRencode)  
+
                 if not json:
                     json = {
-                    "nombreusuario": x[0],
-                    "distribuidor": x[1],
-                    "grupotrabajo": [{
-                            "grupo": x[2]
+                    "nombreusuario": x[1],
+                    "distribuidorgrupotrabajo": [{
+                            "id_distribuidor_grupotrabajo": hashIDrelacion.hexdigest(),
+                            "distribuidor": x[2],
+                            "grupotrabajo": x[3]
                         }]
                     }
                     
                 else:
-                    grupo = {"grupo": x[2]}
-                    json['grupotrabajo'].append(grupo)
+                    idRencode = str(x[0]).encode()
+                    hashIDrelacion = hashlib.new("sha1",idRencode)
+                    grupo = {"id_distribuidor_grupotrabajo": hashIDrelacion.hexdigest(),"distribuidor": x[2],"grupotrabajo": x[3]}
+                    json['distribuidorgrupotrabajo'].append(grupo)
         else:
             for x in userdata:
+                idRencode = str(x[0]).encode()
+                hashIDrelacion = hashlib.new("sha1",idRencode)
+
                 json = {
-                    "nombreusuario": x[0],
-                    "distribuidor": x[1],
-                    "grupotrabajo": x[2]
+                    "nombreusuario": x[1],
+                    "distribuidorgrupotrabajo": {
+                        "id_distribuidor_grupotrabajo": hashIDrelacion.hexdigest(),
+                        "distribuidor": x[2],
+                        "grupotrabajo": x[3]
+                    }
                 }
         
         data.append(json)
@@ -213,31 +206,3 @@ def actualizar_usuario(id,username,distribuidor,grupotrabajo):
 
     return update
 
-"""def login_user(correo, password):
-    password = password.encode("utf-8")
-    conexxion = conect()
-    with conexxion.cursor() as cursor:
-        cursor.execute("SELECT * FROM user")
-        userdata = cursor.fetchall()
-        for x in userdata:
-            pass_BD = x[2].encode("utf-8")
-            if x[1] == correo and bcrypt.checkpw(password, pass_BD):
-                permiso = { "acceso": "true", "empresa": x[3] }
-                break
-            else:
-                permiso = { "acceso": "false", "empresa": None }
-        return permiso
-"""
-
-"""def login_user(correo, password):
-    conexxion = conect()
-    with conexxion.cursor() as cursor:
-        cursor.execute("SELECT * FROM user")
-        userdata = cursor.fetchall()
-        for x in userdata:
-            if x[1] == correo and x[2] == password:
-                permiso = { "acceso": "true", "empresa": x[3] }
-                break
-            else:
-                permiso = { "acceso": "false", "empresa": None }
-        return permiso"""

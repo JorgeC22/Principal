@@ -1,8 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from controlador import *
-#from flask import jsonify
-from flask_login import LoginManager, current_user,login_user,logout_user,login_required
-from models.user import User
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = 'dont tell anyone'
@@ -11,31 +8,12 @@ app.secret_key = 'dont tell anyone'
 
 
 
-
-@app.route("/login", methods = ['POST'])
-def login():
-    if request.method == 'POST':
-        logger_user = loggin_user(request.form['correo'],request.form['password'])
-        if logger_user != None:
-            login_user(logger_user)
-            return redirect('/'+logger_user.distribuidor+'/home')
-        else:
-            flash("Error: El correo o contraseña son erroneos")
-            return redirect('/')
-
-@app.route("/logout")
-def logout():
-    logout_user()
-    return redirect('/')
-
-
-
 @app.route("/insertarusuario", methods = ['POST'])
 def insertarusuario():
     if request.method == 'POST':
-        data = request.values
-        print(data)
-        user_alta = insertar_usuario(request.form['username'],request.form['password'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
+        arrayDistribuidorGrupoTrabajo = relacionDistribuidroGrupoTrabajo(request.form.getlist('distribuidor[]'),request.form.getlist('grupotrabajo[]'))
+        print(arrayDistribuidorGrupoTrabajo)
+        user_alta = insertar_usuario(request.form['username'],request.form['password'],arrayDistribuidorGrupoTrabajo)
         if user_alta == True:
             flash("Registro correctamente el usuario.")
             return redirect('/altausuario')
@@ -48,18 +26,8 @@ def insertarusuario():
 def altausuario():
     return render_template('altauser.html')
 
-@app.route("/red")
-def red():
-    return render_template('red.html')
 
 
-@app.route("/prueba", methods = ['POST','GET'] )
-def prueba():
-    if request.method == 'POST':
-        userr = User(123456,'jorge','1234','myco','social')
-        return render_template('consultauser.html', data = userr)
-    else:
-        return render_template('consultauser.html')
 
 
 @app.route("/consultausuarios", methods=['GET'])
@@ -103,7 +71,7 @@ def consultaactualizar(id):
 def updateuser(id):
     if request.method == 'POST':
         iduser_original = verificarhash(id)
-        user_update = actualizar_usuario(iduser_original,request.form['username'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
+        user_update = actualizar_usuario(iduser_original,request.form['nombre_usuario'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
         if user_update == True:
             flash("Registro correctamente el usuario.")
             return redirect('/'+id+'/actualizarusuario')
@@ -111,28 +79,6 @@ def updateuser(id):
             flash("Error: No se pudo registrat el usuario.")
             return redirect('/'+id+'/actualizarusuario')
 
-
-
-
-
-
-@app.route("/arreglo")
-def arreglo():
-    flash("Error: No se pudo registrat el usuario.")
-    return render_template('arreglo.html')
-
-@app.route("/farreglo", methods = ['POST'])
-def farreglo():
-    session['idrelacion'] = request.form['idrelacion']
-    session['grupotrabajo'] = request.form['grupotrabajo']
-    #print(arreglo)
-    return redirect('garreglo')
-
-@app.route("/garreglo")
-def garreglo():
-    
-    #print(arreglo)
-    return "Datos almacenados en sesion: "+str(session.get('grupotrabajo'))+", y "+str(session.get('idrelacion'))
 
 
 

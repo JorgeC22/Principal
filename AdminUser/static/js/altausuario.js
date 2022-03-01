@@ -1,49 +1,79 @@
-window.onload=function(){
-    
-    var form = document.getElementById('forminsert');
-    //var campo = document.getElementsByClassName('campodato');
-
-    var inputgtrabajo = document.getElementById('msg_error');
-
-   
-    
-    
-    
-    
-    //var value = document.getElementById('searchInput').value;
-
-}
-
-
-
 let btnmas = document.getElementById('btnmas');
 
 btnmas.addEventListener('click', () => {
     var form = document.getElementById('forminsert');
+    //Div base del registro Distribuidor - Grupo de Trabajo
+    var divDistribuidorGrupoTrabajo = document.createElement("div");
+    divDistribuidorGrupoTrabajo.setAttribute('class', 'row');
+    //Elemento de referencia.
     var elementofinal = document.getElementById('msg_error');
-    var pU = document.createElement("p");
-    pU.setAttribute('id', 'titlecamp');
-    var texto = document.createTextNode("Grupo Trabajo");
-    pU.appendChild(texto);
-    var inp = document.createElement("input");
-    inp.setAttribute('id', 'campogrupo');
-    inp.setAttribute('name', 'grupotrabajo[]');
-    form.insertBefore(inp,elementofinal);
-    form.insertBefore(pU,inp);
+    
+    //Div de distribuidor
+    var divcampdistribuidor = document.createElement("div");
+    divcampdistribuidor.setAttribute('class', 'mb-3 col-sm-6');
+    //Label de distribuidor
+    var labelDistribuidor = document.createElement("label");
+    labelDistribuidor.setAttribute('class', 'col-form-label');
+    var textoDistribuidor = document.createTextNode("Distribuidor");
+    labelDistribuidor.appendChild(textoDistribuidor);
+    //Input de Distribuidor
+    var inpDistribuidor = document.createElement("input");
+    inpDistribuidor.setAttribute('class','form-control')
+    inpDistribuidor.setAttribute('id', 'campogrupo');
+    inpDistribuidor.setAttribute('name', 'distribuidor[]');
+
+
+
+    //Div de Grupo Trabajo
+    var divcampGrupoTrabajo = document.createElement("div");
+    divcampGrupoTrabajo.setAttribute('class', 'mb-3 col-sm-6');
+    //Label de Grupo Trabajo
+    var labelGrupoTrabajo = document.createElement("label");
+    labelGrupoTrabajo.setAttribute('class', 'col-form-label');
+    var textoGrupoTrabajo = document.createTextNode("Grupo de Trabajo");
+    labelGrupoTrabajo.appendChild(textoGrupoTrabajo);
+    //Div Input & Button
+    var divInputButton = document.createElement("div");
+    divInputButton.setAttribute('class', 'row');
+    //Div de Input Grupo Trabajo
+    var divInput = document.createElement("div");
+    divInput.setAttribute('class', 'col-sm-10');
+    //Input de Grupo Trabajo
+    var inpGrupoTrabajo = document.createElement("input");
+    inpGrupoTrabajo.setAttribute('class','form-control')
+    inpGrupoTrabajo.setAttribute('id', 'campogrupo');
+    inpGrupoTrabajo.setAttribute('name', 'grupotrabajo[]');
+
+    //Button de Eliminacion Distribuidor - Grupo de Trabajo
+    var btn = document.createElement("button");
+    btn.setAttribute('type', 'button');
+    btn.setAttribute('id', 'btneliminar');
+    btn.setAttribute('class', 'btn btn-danger col-sm-2');
+    btn.setAttribute('onclick', 'eliminar(this)')
+    var btntexto = document.createTextNode("Eliminar");
+    btn.append(btntexto);
+
+    divInput.appendChild(inpGrupoTrabajo);
+    divInputButton.appendChild(divInput);
+    divInputButton.appendChild(btn);
+    divcampGrupoTrabajo.appendChild(labelGrupoTrabajo);
+    divcampGrupoTrabajo.appendChild(divInputButton);
+
+    divcampdistribuidor.appendChild(labelDistribuidor);
+    divcampdistribuidor.appendChild(inpDistribuidor);
+
+    divDistribuidorGrupoTrabajo.appendChild(divcampdistribuidor);
+    divDistribuidorGrupoTrabajo.appendChild(divcampGrupoTrabajo);
+
+    form.insertBefore(divDistribuidorGrupoTrabajo,elementofinal);
 
 })
 
-let btnmenos = document.getElementById('btnmenos');
 
-btnmenos.addEventListener('click', () => {
+const eliminar = (e) => {
     var form = document.getElementById('forminsert');
-    var campog = document.querySelectorAll('#campogrupo');
-    var titlec = document.querySelectorAll('#titlecamp');
-    console.log(campog.length);
-    form.removeChild(campog[campog.length - 1]);
-    form.removeChild(titlec[titlec.length - 1]);
-    //form.removeChild(campog);
-
-})
-
-
+    elemtPadredivInputButton = e.parentNode;
+    elemtPadredivGrupoTrabajo = elemtPadredivInputButton.parentNode;
+    elemtPadredivDistribuidroGrupoTrabajo = elemtPadredivGrupoTrabajo.parentNode;
+    form.removeChild(elemtPadredivDistribuidroGrupoTrabajo);
+}
