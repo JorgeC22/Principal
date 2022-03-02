@@ -47,8 +47,8 @@ def listausuarios():
 
 @app.route("/eliminarusuario", methods=['POST'])
 def eliminiarusuario():
-    iduser_original = verificarhash(request.form['identificador'])
-    eliminar_usuario(iduser_original)
+    idDGT_original = verificarhashrelacion(request.form['identificador'])
+    elimniar_distribuidor_grupotrabajo(idDGT_original)
     return redirect('/listausuarios')
 
 
@@ -61,8 +61,8 @@ def actualizarusuario(id):
 
 @app.route("/<id>/consultaactualizar", methods=['GET'])
 def consultaactualizar(id):
-    iduser_original = verificarhash(id)
-    usuario = consulta_actualizar(iduser_original)
+    idDGT_original = verificarhashrelacion(id)
+    usuario = consulta_actualizar(idDGT_original)
     res = jsonify(usuario)
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
@@ -70,8 +70,8 @@ def consultaactualizar(id):
 @app.route("/<id>/updateuser", methods = ['POST'])
 def updateuser(id):
     if request.method == 'POST':
-        iduser_original = verificarhash(id)
-        user_update = actualizar_usuario(iduser_original,request.form['nombre_usuario'],request.form['distribuidor'],request.form.getlist('grupotrabajo[]'))
+        idDGT_original = verificarhashrelacion(id)
+        user_update = actualizar_usuario(idDGT_original,request.form['distribuidor'],request.form['grupotrabajo'])
         if user_update == True:
             flash("Registro correctamente el usuario.")
             return redirect('/'+id+'/actualizarusuario')
@@ -86,6 +86,7 @@ def updateuser(id):
 @app.errorhandler(401)
 def status_401(error):
     return redirect('/')
+
 
 @app.errorhandler(404)
 def status_404(error):

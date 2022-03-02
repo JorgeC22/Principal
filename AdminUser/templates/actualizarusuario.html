@@ -9,11 +9,7 @@
             <label for="nombre_usuario" class="col-sm-2 col-form-label">Nombre usuario</label>
             <input required type="text" class="form-control" name="nombre_usuario" id="nombre_usuario">
         </div>
-        <div class="mb-3">
-            <label for="distribuidor" class="col-sm-2 col-form-label">Distribuidor</label>
-            <input required type="text" class="form-control" name="distribuidor" id="distribuidor">
-        </div>
-        <button class="btn btn-success mb-3" type="button" id="btnmas">Agregar Grupo de trabajo</button>
+        <!--<button class="btn btn-success mb-3" type="button" id="btnmas">Agregar Grupo de trabajo</button>-->
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}

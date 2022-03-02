@@ -1,3 +1,4 @@
+from dis import dis
 from conexion import conect
 import bcrypt
 from models.user import User
@@ -65,31 +66,35 @@ def obtener_usuarios():
     data = []
     with conexxion.cursor() as cursor:
         cursor.execute("""
-                        select u.id_usuario, u.nombre_usuario, u.contraseña, udg.distribuidor, udg.grupo_trabajo, ur.ruta 
+                        select u.id_usuario, u.nombre_usuario, u.contraseña, udg.id_distribuidor_grupotrabajo, udg.distribuidor, udg.grupo_trabajo, ur.ruta 
                         from usuarios u 
 	                        join usuario_ruta ur on u.id_usuario  = ur.id_usuario 
 	                        join usuario_distribuidor_grupotrabajo udg on ur.id_usuario = udg.id_usuario""")
         usuarios = cursor.fetchall()
         for i in usuarios:
-            if(i[4]==None):
+            if(i[5]==None):
                 gtrabajo = " " 
             else:
-                gtrabajo = i[4]
+                gtrabajo = i[5]
 
-            idencode = str(i[0]).encode()
-            hashID = hashlib.new("sha1",idencode)
+            idUserencode = str(i[0]).encode()
+            hashID = hashlib.new("sha1",idUserencode)
+
+            idDGTencode = str(i[3]).encode()
+            hashIDDGT = hashlib.new("sha1",idDGTencode)
             json = {
-                        "id": hashID.hexdigest(),
+                        "id_distribuidor_grupotrabajo": hashIDDGT.hexdigest(),
+                        "id_usuario": hashID.hexdigest(),
                         "nombre_usuario": i[1],
                         "contraseña": i[2],
-                        "distribuidor": i[3],
+                        "distribuidor": i[4],
                         "grupotrabajo": gtrabajo,
-                        "ruta": i[5]
+                        "ruta": i[6]
                     }
             data.append(json)
     return data
 
-def eliminar_usuario(iduser):
+"""def eliminar_usuario(iduser):
     conexxion = conect()
     with conexxion.cursor() as cursor:
         delete_usuario = "delete from usuarios where id_usuario = "+str(iduser)+""
@@ -101,6 +106,20 @@ def eliminar_usuario(iduser):
         conexxion.commit()
     delete = True
     return delete
+"""
+
+def elimniar_distribuidor_grupotrabajo(id_distribuidor_grupotrabajo):
+    sqls = []
+    conexxion = conect()
+    with conexxion.cursor() as cursor:
+        delete_usuario_distribuidor_grupotrabajo = "delete from usuario_distribuidor_grupotrabajo where id_distribuidor_grupotrabajo = "+str(id_distribuidor_grupotrabajo)+""
+        sqls.append(delete_usuario_distribuidor_grupotrabajo)
+        for c in sqls:
+            cursor.execute(c)
+        conexxion.commit()
+    delete = True
+    return delete
+
 
 def verificarhash(hashiduser):
     conexxion = conect()
@@ -137,7 +156,106 @@ def verificarhashrelacion(hashidrelacion):
     return idsearch
 
 
-def consulta_actualizar(id):
+def IDDistribuidroGrupoTrabajo(Ids,distribuidores,gruposTrabajos):
+    datajson = []
+    for number in range(0,len(distribuidores)):
+        id_dgt_original = verificarhashrelacion(Ids[number])
+        
+        if gruposTrabajos[number] == "":
+            json = {"distribuidor": distribuidores[number],"grupotrabajo": None, "idDistribuidorGrupotrabajo": id_dgt_original}
+            datajson.append(json)
+        else:
+            json = {"distribuidor": distribuidores[number],"grupotrabajo": gruposTrabajos[number],"idDistribuidorGrupotrabajo": id_dgt_original}
+            datajson.append(json)
+
+    return datajson
+
+
+def verificacion_eliminacion_reg_distribuidor_grupotrabajo(idusuario,distgrupotID):
+    conexxion = conect()
+    with conexxion.cursor() as cursor:
+        cursor.execute("select id_distribuidor_grupotrabajo from usuario_distribuidor_grupotrabajo where id_usuario = '"+idusuario+"'")
+        userdata = cursor.fetchall()
+
+        for q in userdata:
+            for reg in distgrupotID:
+                print(str(q[0])+" vs "+str(reg['idDistribuidorGrupotrabajo']))
+                if q[0] == reg['idDistribuidorGrupotrabajo']:
+                    existencia = True
+                    break
+                else:
+                    existencia = False
+            
+            if existencia == False:
+                cursor.execute("delete from usuario_distribuidor_grupotrabajo where id_distribuidor_grupotrabajo = "+str(q[0])+"")
+    conexxion.commit()
+    return "Verificacion y eliminacion de registros realizado correctamente"
+
+def consulta_actualizar(id_distribuidor_grupotrabajo):
+    conexxion = conect()
+    data = []
+    json = {}
+    with conexxion.cursor() as cursor:
+        cursor.execute("select id_distribuidor_grupotrabajo, nombre_usuario, distribuidor, grupo_trabajo from usuarios inner join usuario_distribuidor_grupotrabajo where usuarios.id_usuario = usuario_distribuidor_grupotrabajo.id_usuario and usuario_distribuidor_grupotrabajo.id_distribuidor_grupotrabajo = "+str(id_distribuidor_grupotrabajo)+"")
+        userdata = cursor.fetchall()
+        
+        
+        for x in userdata:
+            idRencode = str(x[0]).encode()
+            hashIDrelacion = hashlib.new("sha1",idRencode)
+
+            json = {
+                "nombreusuario": x[1],
+                "distribuidorgrupotrabajo": {
+                    "id_distribuidor_grupotrabajo": hashIDrelacion.hexdigest(),
+                    "distribuidor": x[2],
+                    "grupotrabajo": x[3]
+                }
+            }
+        
+        data.append(json)
+    return data
+
+
+
+def actualizar_usuario(id_distribuidor_grupotrabajo,distribuidor,grupotrabajo):
+    try:
+        sqls = []
+        conexxion = conect()
+        with conexxion.cursor() as cursor:
+
+            if grupotrabajo != "":
+                update_distribuidor_grupotrabajo = "update usuario_distribuidor_grupotrabajo set distribuidor='"+distribuidor+"', grupo_trabajo= "+grupotrabajo+" where id_distribuidor_grupotrabajo = "+str(id_distribuidor_grupotrabajo)+""
+                sqls.append(update_distribuidor_grupotrabajo)
+            else:
+                update_distribuidor_grupotrabajo = "update usuario_distribuidor_grupotrabajo set distribuidor='"+distribuidor+"', grupo_trabajo= Null where id_distribuidor_grupotrabajo = "+str(id_distribuidor_grupotrabajo)+""
+                sqls.append(update_distribuidor_grupotrabajo)
+            for accion in sqls:
+                cursor.execute(accion)  
+        conexxion.commit()
+        update = True
+    except:
+        update = False
+
+    return update
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""def consulta_actualizar(id):
     conexxion = conect()
     data = []
     json = {}
@@ -183,26 +301,34 @@ def consulta_actualizar(id):
         
         data.append(json)
     return data
+"""
 
+"""def actualizar_usuario(id,username,distgrupotID):
+    sqls = []
+    conexxion = conect()
+    with conexxion.cursor() as cursor:
+        update_usuario = "update usuarios set nombre_usuario='"+username+"' where id_usuario = '"+id+"'"
+        sqls.append(update_usuario)
 
-def actualizar_usuario(id,username,distribuidor,grupotrabajo):
-    try:
-        conexxion = conect()
-        with conexxion.cursor() as cursor:
-            cursor.execute("update usuarios set nombre_usuario='"+username+"' where id_usuario = '"+id+"'")
-
-            cursor.execute("delete from usuario_distribuidor_grupotrabajo where id_usuario = '"+id+"'")
-
-            if not grupotrabajo:
-                cursor.execute("insert into usuario_distribuidor_grupotrabajo (id_usuario,distribuidor) values('%s','%s')" % (id,distribuidor))
+        for reg in distgrupotID:
+            if reg['idDistribuidorGrupotrabajo'] != None:
+                if reg['grupotrabajo'] != None:
+                    update_distribuidor_gt = "update usuario_distribuidor_grupotrabajo set distribuidor='"+reg['distribuidor']+"', grupo_trabajo='"+reg['grupotrabajo']+"' where id_distribuidor_grupotrabajo = "+str(reg['idDistribuidorGrupotrabajo'])+""
+                    sqls.append(update_distribuidor_gt)
+                else:
+                    update_distribuidor_gt = "update usuario_distribuidor_grupotrabajo set distribuidor='"+reg['distribuidor']+"', grupo_trabajo= Null where id_distribuidor_grupotrabajo = "+str(reg['idDistribuidorGrupotrabajo'])+""
+                    sqls.append(update_distribuidor_gt)
             else:
-                for dato in grupotrabajo:
-                    cursor.execute("insert into usuario_distribuidor_grupotrabajo values('%s','%s','%s')" % (id,distribuidor,dato))
-        
-        conexxion.commit()
-        update = True
-    except:
-        update = False
+                if reg['grupotrabajo'] != None:
+                    insert_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo (id_usuario,distribuidor,grupo_trabajo) values('"+id+"','"+str(reg['distribuidor'])+"','"+reg['grupotrabajo']+"')"
+                    sqls.append(insert_distribuidor_gt)
+                else:
+                    insert_distribuidor_gt = "insert into usuario_distribuidor_grupotrabajo (id_usuario,distribuidor) values('"+id+"','"+str(reg['distribuidor'])+"')"
+                    sqls.append(insert_distribuidor_gt)
+        for accion in sqls:
+            cursor.execute(accion)  
+    conexxion.commit()
+    update = True
 
     return update
-
+"""
