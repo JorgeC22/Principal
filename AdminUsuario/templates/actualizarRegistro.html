@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="container pt-4">
+    <form class="" action="" method="POST" id="formupdate">
+        <div class="mb-3">
+            <label for="nombre_usuario" class="col-sm-2 col-form-label">Nombre usuario</label>
+            <input required type="text" class="form-control" name="nombre_usuario" id="nombre_usuario">
+        </div>
+        <!--<button class="btn btn-success mb-3" type="button" id="btnmas">Agregar Grupo de trabajo</button>-->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <p id="msg_error" class="msg_error text-danger">{{message}}</p>
+            {% endfor %}
+        {% else %}
+            <p id="msg_error" class="msg_error text-danger"></p>
+        {% endif %}
+        {% endwith %}
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <input class="btn btn-primary" type="submit" value="Actualizar">
+            <a class="btn btn-success" href="{{ url_for('listausuarios') }}" role="button">Regresar</a>
+        </div>
+    </form>
+</div>
+
+    <script type='text/javascript' src="{{ url_for('static', filename='js/actualizarconsulta.js') }}"></script>
+
+{% endblock %}

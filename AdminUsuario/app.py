@@ -45,8 +45,8 @@ def listausuarios():
 
 
 
-@app.route("/eliminarusuario", methods=['POST'])
-def eliminiarusuario():
+@app.route("/eliminarDistribuidorGrupotrabajo", methods=['POST'])
+def eliminarDistribuidorGrupotrabajo():
     idDGT_original = verificarhashrelacion(request.form['identificador'])
     elimniar_distribuidor_grupotrabajo(idDGT_original)
     return redirect('/listausuarios')
@@ -54,9 +54,9 @@ def eliminiarusuario():
 
 
 
-@app.route("/<id>/actualizarusuario")
-def actualizarusuario(id):
-    return render_template('actualizarusuario.html')
+@app.route("/<id>/actualizarRegistro")
+def actualizarRegistro(id):
+    return render_template('actualizarRegistro.html')
 
 
 @app.route("/<id>/consultaactualizar", methods=['GET'])
@@ -67,17 +67,69 @@ def consultaactualizar(id):
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
-@app.route("/<id>/updateuser", methods = ['POST'])
-def updateuser(id):
+@app.route("/<id>/actualizarDistribuidorGrupotrabajo", methods = ['POST'])
+def actualizarDistribuidorGrupotrabajo(id):
     if request.method == 'POST':
         idDGT_original = verificarhashrelacion(id)
-        user_update = actualizar_usuario(idDGT_original,request.form['distribuidor'],request.form['grupotrabajo'])
+        user_update = actualizar_distribuidor_grupotrabajo(idDGT_original,request.form['distribuidor'],request.form['grupotrabajo'])
         if user_update == True:
             flash("Registro correctamente el usuario.")
-            return redirect('/'+id+'/actualizarusuario')
+            return redirect('/'+id+'/actualizarRegistro')
         else:
             flash("Error: No se pudo registrat el usuario.")
-            return redirect('/'+id+'/actualizarusuario')
+            return redirect('/'+id+'/actualizarRegistro')
+
+
+
+
+@app.route("/modificarUsuario")
+def modificarUsuario():
+    return render_template('modificarusuario.html')
+
+
+@app.route("/actualizarUsuario", methods=['POST'])
+def actualizarUsuario():
+    idusuario_original = verificarhash(request.form['idusuario'])
+    if idusuario_original != None:
+        datajson = IDDistribuidroGrupoTrabajo(request.form.getlist('idDistribuidorGrupotrabajo[]'),request.form.getlist('distribuidor[]'),request.form.getlist('grupotrabajo[]'))
+        verificacion_eliminacion_reg_distribuidor_grupotrabajo(idusuario_original,datajson)
+        user_update = actualizar_usuario(idusuario_original,request.form['nombre_usuario'],datajson,request.form['ruta'])
+        if user_update == True:
+            flash("Registro correctamente el usuario.")
+            return redirect('/modificarUsuario')
+        else:
+            flash("Error: No se pudo registrat el usuario.")
+            return redirect('/modificarUsuario')
+    flash("Error: No se pudo registrat el usuario.")
+    return render_template('modificarusuario.html')
+
+@app.route("/consultaUsuario/<nombreUsuario>", methods=['GET'])
+def consultaUsuario(nombreUsuario):
+    idUsuario = existencia_usuario(nombreUsuario)
+    if idUsuario != None:
+        usuario = consulta_usuario(idUsuario)
+        res = jsonify(usuario)
+        res.headers.add('Access-Control-Allow-Origin', '*')
+        return res
+    else:
+        return "No existe Usuario"
+
+@app.route("/eliminarUsuario", methods=['POST'])
+def eliminiarUsuario():
+    idUsuario_original = verificarhash(request.form['identificador'])
+    if idUsuario_original != None:
+        eliminarUsuario = eliminar_usuario(idUsuario_original)
+        if eliminar_usuario != None:
+            flash("Se Elimino Correctamente el Usuario.")
+            return redirect('/modificarUsuario')
+        else:
+            flash("Error: No se puede eliminar el Usuario.")
+            return redirect('/modificarUsuario')
+    else:
+        flash("Error: No se puede eliminar el Usuario.")
+        return redirect('/modificarUsuario')
+
+
 
 
 

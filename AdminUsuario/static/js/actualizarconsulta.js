@@ -2,7 +2,7 @@ window.onload=function(){
     usuarios();
     function usuarios(){
         let URLactual = document.URL;
-        var URLnew = URLactual.replace("actualizarusuario", "consultaactualizar");
+        var URLnew = URLactual.replace("actualizarRegistro", "consultaactualizar");
         
 
         var xhttp = new XMLHttpRequest();
@@ -11,7 +11,7 @@ window.onload=function(){
         xhttp.onreadystatechange = function(){
             if(this.readyState==4 && this.status==200){
                 var json = JSON.parse(this.responseText);
-                var URLfuncion = URLactual.replace("actualizarusuario", "updateuser");
+                var URLfuncion = URLactual.replace("actualizarRegistro", "actualizarDistribuidorGrupotrabajo");
                 
                 var form = document.getElementById('formupdate');
                 var elementofinal = document.getElementById('msg_error');
@@ -73,21 +73,10 @@ window.onload=function(){
                         inpGrupoTrabajo.setAttribute('id', 'campogrupo');
                         inpGrupoTrabajo.setAttribute('name', 'grupotrabajo');
 
-                        //Button de Eliminacion Distribuidor - Grupo de Trabajo
-                        var btn = document.createElement("button");
-                        btn.setAttribute('type', 'button');
-                        btn.setAttribute('id', 'btneliminar');
-                        btn.setAttribute('class', 'btn btn-danger col-sm-2');
-                        btn.setAttribute('onclick', 'eliminar(this)')
-                        var btntexto = document.createTextNode("Eliminar");
-                        btn.append(btntexto);
-
-                        //Input para el identificador de relaciones
                         
 
                         divInput.appendChild(inpGrupoTrabajo);
                         divInputButton.appendChild(divInput);
-                        divInputButton.appendChild(btn);
                         divcampGrupoTrabajo.appendChild(labelGrupoTrabajo);
                         divcampGrupoTrabajo.appendChild(divInputButton);
 

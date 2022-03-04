@@ -66,7 +66,7 @@ window.onload=function(){
                     btn.setAttribute("type","button");
                     btn.setAttribute("class","btn btn-sm btn-outline-secondary");
                     btn.setAttribute("id","editar"+json[i].id_usuario);
-                    btn.setAttribute("onclick","location.href='http://127.0.0.1:5000/"+json[i].id_distribuidor_grupotrabajo+"/actualizarusuario';")
+                    btn.setAttribute("onclick","location.href='http://127.0.0.1:5000/"+json[i].id_distribuidor_grupotrabajo+"/actualizarRegistro';")
                     celda.appendChild(btn);
                     var texto = document.createTextNode("Editar");
                     btn.appendChild(texto);
@@ -75,7 +75,7 @@ window.onload=function(){
                     //Celda de Boton para eliminar
                     var celda = document.createElement("td");
                     var form = document.createElement("form");
-                    form.setAttribute('action', 'http://127.0.0.1:5000/eliminarusuario');
+                    form.setAttribute('action', 'http://127.0.0.1:5000/eliminarDistribuidorGrupotrabajo');
                     form.setAttribute('method', 'POST');
                     celda.appendChild(form);
                     var btn = document.createElement("button");

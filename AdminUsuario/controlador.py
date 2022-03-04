@@ -1,7 +1,6 @@
 from dis import dis
 from conexion import conect
 import bcrypt
-from models.user import User
 import hashlib
 import uuid
 import random
@@ -94,19 +93,21 @@ def obtener_usuarios():
             data.append(json)
     return data
 
-"""def eliminar_usuario(iduser):
-    conexxion = conect()
-    with conexxion.cursor() as cursor:
-        delete_usuario = "delete from usuarios where id_usuario = "+str(iduser)+""
-        delete_usuario_distribuidor_grupotrabajo = "delete from usuario_distribuidor_grupotrabajo where id_usuario = "+str(iduser)+""
-        delete_usuario_ruta = "delete from usuario_ruta where id_usuario = "+str(iduser)+""
-        sqls = [delete_usuario_ruta,delete_usuario_distribuidor_grupotrabajo,delete_usuario]
-        for c in sqls:
-            cursor.execute(c)
-        conexxion.commit()
-    delete = True
+def eliminar_usuario(iduser):
+    try:
+        conexxion = conect()
+        with conexxion.cursor() as cursor:
+            delete_usuario = "delete from usuarios where id_usuario = '"+str(iduser)+"'"
+            delete_usuario_distribuidor_grupotrabajo = "delete from usuario_distribuidor_grupotrabajo where id_usuario = '"+str(iduser)+"'"
+            delete_usuario_ruta = "delete from usuario_ruta where id_usuario = '"+str(iduser)+"'"
+            sqls = [delete_usuario_ruta,delete_usuario_distribuidor_grupotrabajo,delete_usuario]
+            for c in sqls:
+                cursor.execute(c)
+            conexxion.commit()
+        delete = True
+    except:
+        delete = None  
     return delete
-"""
 
 def elimniar_distribuidor_grupotrabajo(id_distribuidor_grupotrabajo):
     sqls = []
@@ -218,14 +219,14 @@ def consulta_actualizar(id_distribuidor_grupotrabajo):
 
 
 
-def actualizar_usuario(id_distribuidor_grupotrabajo,distribuidor,grupotrabajo):
+def actualizar_distribuidor_grupotrabajo(id_distribuidor_grupotrabajo,distribuidor,grupotrabajo):
     try:
         sqls = []
         conexxion = conect()
         with conexxion.cursor() as cursor:
 
             if grupotrabajo != "":
-                update_distribuidor_grupotrabajo = "update usuario_distribuidor_grupotrabajo set distribuidor='"+distribuidor+"', grupo_trabajo= "+grupotrabajo+" where id_distribuidor_grupotrabajo = "+str(id_distribuidor_grupotrabajo)+""
+                update_distribuidor_grupotrabajo = "update usuario_distribuidor_grupotrabajo set distribuidor='"+distribuidor+"', grupo_trabajo= '"+grupotrabajo+"' where id_distribuidor_grupotrabajo = "+str(id_distribuidor_grupotrabajo)+""
                 sqls.append(update_distribuidor_grupotrabajo)
             else:
                 update_distribuidor_grupotrabajo = "update usuario_distribuidor_grupotrabajo set distribuidor='"+distribuidor+"', grupo_trabajo= Null where id_distribuidor_grupotrabajo = "+str(id_distribuidor_grupotrabajo)+""
@@ -249,65 +250,92 @@ def actualizar_usuario(id_distribuidor_grupotrabajo,distribuidor,grupotrabajo):
 
 
 
+def existencia_usuario(nombre_usuario):
+    conexxion = conect()
+    with conexxion.cursor() as cursor:
+        cursor.execute("select * from usuarios where nombre_usuario = '"+nombre_usuario+"'")
+        userdata = cursor.fetchall()
+        if userdata:
+            for usuario in userdata:
+                id_usuario = usuario[0]
+        else:
+            id_usuario = None
+    
+    return id_usuario
+        
 
-
-
-
-
-
-"""def consulta_actualizar(id):
+def consulta_usuario(idUsuario):
     conexxion = conect()
     data = []
     json = {}
     with conexxion.cursor() as cursor:
-        cursor.execute("select id_distribuidor_grupotrabajo, nombre_usuario, distribuidor, grupo_trabajo from usuarios inner join usuario_distribuidor_grupotrabajo where usuarios.id_usuario = usuario_distribuidor_grupotrabajo.id_usuario and usuarios.id_usuario = '"+id+"'")
+        cursor.execute("""
+                        select u.id_usuario, u.nombre_usuario, udg.id_distribuidor_grupotrabajo, udg.distribuidor, udg.grupo_trabajo, ur.ruta 
+                        from usuarios u 
+	                        join usuario_ruta ur on u.id_usuario  = ur.id_usuario 
+	                        join usuario_distribuidor_grupotrabajo udg on ur.id_usuario = udg.id_usuario
+                        where u.id_usuario = '%s'""" % idUsuario)
         userdata = cursor.fetchall()
+        
         
         if len(userdata) > 1:
             
             for x in userdata:
 
-                idRencode = str(x[0]).encode()
-                hashIDrelacion = hashlib.new("sha1",idRencode)  
+                idUsuario = str(x[0]).encode()
+                hashIDusuario = hashlib.new("sha1",idUsuario)
+                
+                idDGTencode = str(x[2]).encode()
+                hashIDDGT = hashlib.new("sha1",idDGTencode)  
 
                 if not json:
                     json = {
+                    "id_usuario": hashIDusuario.hexdigest(),
                     "nombreusuario": x[1],
                     "distribuidorgrupotrabajo": [{
-                            "id_distribuidor_grupotrabajo": hashIDrelacion.hexdigest(),
-                            "distribuidor": x[2],
-                            "grupotrabajo": x[3]
-                        }]
+                            "id_distribuidor_grupotrabajo": hashIDDGT.hexdigest(),
+                            "distribuidor": x[3],
+                            "grupotrabajo": x[4]
+                        }],
+                    "ruta": x[5]
                     }
                     
                 else:
-                    idRencode = str(x[0]).encode()
-                    hashIDrelacion = hashlib.new("sha1",idRencode)
-                    grupo = {"id_distribuidor_grupotrabajo": hashIDrelacion.hexdigest(),"distribuidor": x[2],"grupotrabajo": x[3]}
+                    idDGTencode = str(x[2]).encode()
+                    hashIDDGT = hashlib.new("sha1",idDGTencode)
+                    grupo = {"id_distribuidor_grupotrabajo": hashIDDGT.hexdigest(),"distribuidor": x[3],"grupotrabajo": x[4]}
                     json['distribuidorgrupotrabajo'].append(grupo)
         else:
             for x in userdata:
-                idRencode = str(x[0]).encode()
-                hashIDrelacion = hashlib.new("sha1",idRencode)
+                idUsuario = str(x[0]).encode()
+                hashIDusuario = hashlib.new("sha1",idUsuario)
+                
+                idDGTencode = str(x[2]).encode()
+                hashIDDGT = hashlib.new("sha1",idDGTencode) 
 
                 json = {
+                    "id_usuario": hashIDusuario.hexdigest(),
                     "nombreusuario": x[1],
                     "distribuidorgrupotrabajo": {
-                        "id_distribuidor_grupotrabajo": hashIDrelacion.hexdigest(),
-                        "distribuidor": x[2],
-                        "grupotrabajo": x[3]
-                    }
+                    "id_distribuidor_grupotrabajo": hashIDDGT.hexdigest(),
+                        "distribuidor": x[3],
+                        "grupotrabajo": x[4]
+                    },
+                    "ruta": x[5]
                 }
         
         data.append(json)
     return data
-"""
 
-"""def actualizar_usuario(id,username,distgrupotID):
+
+def actualizar_usuario(id,username,distgrupotID,ruta):
     sqls = []
     conexxion = conect()
     with conexxion.cursor() as cursor:
         update_usuario = "update usuarios set nombre_usuario='"+username+"' where id_usuario = '"+id+"'"
+        sqls.append(update_usuario)
+
+        update_usuario = "update usuario_ruta set ruta='"+ruta+"' where id_usuario = '"+id+"'"
         sqls.append(update_usuario)
 
         for reg in distgrupotID:
@@ -331,4 +359,3 @@ def actualizar_usuario(id_distribuidor_grupotrabajo,distribuidor,grupotrabajo):
     update = True
 
     return update
-"""
