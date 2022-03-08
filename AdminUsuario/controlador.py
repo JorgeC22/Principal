@@ -1,10 +1,159 @@
 from dis import dis
-from conexion import conect
+from conexion import *
 import bcrypt
 import hashlib
 import uuid
 import random
 import string
+
+def existeRuta(ruta):
+    conn = conect()
+    with conn.cursor(dictionary = True) as cursor:
+        cursor.execute("""select *
+                        from usuario_ruta
+                        where ruta = '""" + ruta + """'""")
+        ruta_usuarios = cursor.fetchone()
+    return ruta_usuarios
+
+def isAdmin(id):
+    conn = conect()
+    with conn.cursor(dictionary = True) as cursor:
+        cursor.execute("""select ru.tipo_rol  
+                        from usuario_ruta ur 
+                            join usuarios u on u.id_usuario = ur.id_usuario 
+                            join rol_usuario ru on ru.id_usuario = u.id_usuario 
+                        where u.id_usuario = '""" + id + """'""")
+        usuario = cursor.fetchone()
+    return usuario
+
+def rutaAdmin(ruta):
+    conn = conect()
+    with conn.cursor(dictionary = True) as cursor:
+        cursor.execute("""select ru.tipo_rol  
+                        from usuario_ruta ur 
+                            join usuarios u on u.id_usuario = ur.id_usuario 
+                            join rol_usuario ru on ru.id_usuario = u.id_usuario 
+                        where ruta = '""" + ruta + """'""")
+        user = cursor.fetchone()
+    return user
+
+def obtieneDistribuidor(ruta):
+    conn = conect()
+    with conn.cursor(dictionary = True) as cursor:
+        cursor.execute("""select udg.distribuidor 
+                        from usuarios u 
+                            join usuario_ruta ur on u.id_usuario  = ur.id_usuario 
+                            join usuario_distribuidor_grupotrabajo udg on ur.id_usuario = udg.id_usuario 
+                        where ur.ruta = '""" + ruta + """'
+                        limit 1""")
+        distribuidor = cursor.fetchone()
+    return distribuidor
+
+#Consulta con los parametros para seleccionar los campos de interes
+def obtieneMovimientos(distribuidor,tipo_movimiento,anio):
+    #Conexion hacia la base de datos
+    conn = conexionBD()
+    cur = conn.cursor(dictionary = True)
+    cur.execute("""
+                SELECT 
+                    cac.distribuidor AS 'Distribuidor',
+                    cac.grupo_trabajo AS 'Grupo_Trabajo',
+                    e.nombre AS 'Empresa',
+                    cac.id_cuenta_ahorro AS 'ID_Cuenta_Ahorro', 
+                    SUM(tac.valor_real) AS 'Monto', 
+                    case tac.tipo_movimiento 
+                    when 30 then 'Abono'
+                    when 31 then 'Cargo'
+                    when 34 then 'Comision'
+                    end as Tipo,
+                    YEAR (tac.fecha_alta) AS 'Anio',
+                    MONTH (tac.fecha_alta) AS 'Mes'
+                FROM 
+                    empresa e
+                    JOIN producto_ahorro_empresa pae on e.id_empresa = pae.id_empresa 
+	                JOIN cuenta_ahorro_cliente cac on pae.id_producto_ahorro_empresa = cac.id_producto_ahorro_empresa 
+	                JOIN transacciones_ahorro_cliente tac on cac.id_cuenta_ahorro = tac.id_cuenta_ahorro 
+		        AND cac.distribuidor = '"""+ distribuidor +"""'
+		        AND tac.tipo_movimiento = """ + tipo_movimiento +"""
+                AND YEAR (tac.fecha_alta) = """+ anio +"""
+		        GROUP BY tac.id_cuenta_ahorro,MONTH(tac.fecha_alta);
+	        """
+        )
+    res = cur.fetchall()
+    return res
+#Se recopila la informacion de la respuesta de la consulta y se agrupan los valores de los campos: tipo, anio, mes y monto, en un elemento llamado movimiento
+def creacionJSON(res):
+    data = []
+    for i in res:
+        json = {
+                    'distribuidor': i['Distribuidor'],
+                    'grupo_trabajo': i['Grupo_Trabajo'],
+                    'empresa': i['Empresa'],
+                    'id_cuenta_ahorro':i['ID_Cuenta_Ahorro'],
+                    'movimiento':[
+                        {
+                            'tipo': i['Tipo'],
+                            'anio': i['Anio'],
+                            'mes': i['Mes'],
+                            'monto': i['Monto']
+                        }
+                    ]
+                }
+        data.append(json)
+    return data
+#Se agrupa en un diccionario cada nodo entre los movimientos y la empresa que lo realizo
+def agruparMovimientos(res, data):
+    dic = {}
+    dic['movimientos'] = []
+    periodo = []
+    #Recorre cada posicion del array data
+    for i in range(len(data)):
+        x = res[i]
+        #Recorre cada elemento del array data
+        for j in data:
+            #Si el id_cuenta_ahorro del array data es igual al del array res
+            if(j['id_cuenta_ahorro'] == x['ID_Cuenta_Ahorro']):
+                #Almacena en un array llamado periodo los datos que tiene el elemto movimiento del array data
+                for k in j['movimiento']:
+                    periodo.append(k)
+        #Se define un diccionario donde se almacenara la informacion de ciertos campos del array res
+        if(x['Grupo_Trabajo']==None):
+           nombre = " " 
+        else:
+            nombre = x['Grupo_Trabajo']
+        
+        json = {
+            'distribuidor': x['Distribuidor'],
+            'grupo_trabajo': nombre,
+            'empresa': x['Empresa'],
+            'id_cuenta_ahorro':x['ID_Cuenta_Ahorro']
+        }
+        #Cuando la posicion del array data sea cero
+        if(i == 0):
+            #Actualiza el json agregando el elemento movimiento donde se envia cada uno de los movimientos realizado por dicha empresa
+            z = ({'movimiento':periodo})
+            json.update(z)
+            #Limpiamos el contenido del array periodo
+            periodo = []
+            #Guarda la informacion de json en el nodo movimientos del dic
+            dic['movimientos'].append(json)
+        else:
+            #Cuando la posicion sea diferente de cero
+            #Actualiza el json agregando el elemento movimiento donde se envia cada uno de los movimientos realizado por dicha empresa
+            z = ({'movimiento':periodo})
+            json.update(z)
+            #Limpiamos el contenido del array periodo
+            periodo = []
+            #Realiza un recorrido por cada una de las posiciones de dic en el nodo movimiento
+            for c in dic['movimientos']:
+                #Almacena cada valor contenido del campo id_cuenta_ahorro en un array lista
+                lista = [c['id_cuenta_ahorro']]
+            #Comprueba si dicho id_cuenta_ahorro no existe dentro del array lista
+            bandera = json['id_cuenta_ahorro'] in lista
+            #Si no existe agrega un nuevo registro al dic con la informacion del json        
+            if(bandera==False):
+                dic['movimientos'].append(json)
+    return dic
 
 
 
@@ -277,7 +426,6 @@ def consulta_usuario(idUsuario):
                         where u.id_usuario = '%s'""" % idUsuario)
         userdata = cursor.fetchall()
         
-        
         if len(userdata) > 1:
             
             for x in userdata:
@@ -290,6 +438,7 @@ def consulta_usuario(idUsuario):
 
                 if not json:
                     json = {
+                    "status": "true",
                     "id_usuario": hashIDusuario.hexdigest(),
                     "nombreusuario": x[1],
                     "distribuidorgrupotrabajo": [{

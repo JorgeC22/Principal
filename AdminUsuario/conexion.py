@@ -1,10 +1,21 @@
 import mysql.connector
 
 def conect():
-    return mysql.connector.connect(
-            host="localhost",
-            port= 3306,
-            user="root",
-            passwd="12345",
-            database="prueba"
+        "conexxion a la BD de usuarios/visor"
+        return mysql.connector.connect(
+            host="",
+            port= ,
+            user="",
+            passwd="",
+            database=""
+    )
+
+def conexionBD():
+        "conexxion a la BD de alquimia/movimientos"
+        return mysql.connector.connect(
+            host="",
+            port= ,
+            user="",
+            passwd="",
+            database=""
     )

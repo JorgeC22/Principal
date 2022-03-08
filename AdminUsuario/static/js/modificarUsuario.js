@@ -1,18 +1,29 @@
+function getAbsolutePath() {
+    var loc = window.location;
+    var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+    return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+}
+
+let btnRegresar = document.getElementById('regresar');
+btnRegresar.setAttribute("href",""+getAbsolutePath().slice(0, -1)+"");
+
 var btnsearch = document.getElementById('btnsearch');
 
 btnsearch.addEventListener('click', () => {
     
     var Nombre_search = document.getElementById('search').value;
-    let URLactual = document.URL;
+    var URLactual = document.URL;
     var URLnew = URLactual.replace("modificarUsuario", "consultaUsuario");
         
 
     var form = document.getElementById('formModify');
-    var divbaseGeneralForms = document.getElementById('basegeneralForms') 
+    //var divbaseGeneralForms = document.getElementById('basegeneralForms') 
     var divBaseFormUsuario = document.getElementById('base_form');
     if (divBaseFormUsuario != null){
         form.removeChild(divBaseFormUsuario);
     }
+    var msg = document.getElementById('msg_error');
+    msg.textContent = "";
 
     var xhttp = new XMLHttpRequest();
     xhttp.open('GET',URLnew + '/' + Nombre_search, true);
@@ -20,21 +31,19 @@ btnsearch.addEventListener('click', () => {
     xhttp.onreadystatechange = function(){
         if(this.readyState==4 && this.status==200){
             var json = JSON.parse(this.responseText);
+            
             var URLfuncion = URLactual.replace("modificarUsuario", "actualizarUsuario");
             var URLfuncionEliminar = URLactual.replace("modificarUsuario", "eliminarUsuario");
-            
-            var elementofinal = document.getElementById('msg_error');
             form.setAttribute('action', URLfuncion);
+
             
             for (var i=0;i<json.length;i++){
-                console.log(json);
-                //elemtnombreusuario.value = json[i].nombreusuario;
-                //campo[cont].value = json[i].grupotrabajo[j];
-                //inp.value = json[i].grupotrabajo[j].grupo;
-                //islist = Array.isArray(json[i].distribuidorgrupotrabajo);
-                //for (var j in json[i].distribuidorgrupotrabajo){
-                
-                //Base de Formulario
+
+                if (json[i].status != "true"){
+                    var textoMsg = document.createTextNode("Error: El nombre usuario especificado no existe.");
+                    msg.appendChild(textoMsg);
+                }else{
+                    //Base de Formulario
                 var divBaseForm = document.createElement("div");
                 divBaseForm.setAttribute('id', 'base_form');
                 
@@ -96,7 +105,6 @@ btnsearch.addEventListener('click', () => {
                 btnMIN.value = json[i].id_usuario
 
                 formBtnEliminar.appendChild(btnMIN);
-                divbaseGeneralForms.appendChild(formBtnEliminar);
                 divNombre.appendChild(inputIDusuario);
                 divNombre.appendChild(labelNombre);
                 divNombre.appendChild(inputNombre);
@@ -108,6 +116,7 @@ btnsearch.addEventListener('click', () => {
                 divBaseForm.appendChild(divRuta);
                 divBaseForm.appendChild(btnMAS)
                 
+                divBaseForm.appendChild(formBtnEliminar);
 
                 
                 
@@ -287,7 +296,7 @@ btnsearch.addEventListener('click', () => {
                         inpDistribuidor.setAttribute('class','form-control')
                         inpDistribuidor.setAttribute('id', 'campogrupo');
                         inpDistribuidor.setAttribute('name', 'distribuidor[]');
-                        inpDistribuidor.value = json[i].distribuidorgrupotrabajo.distribuidor
+                        inpDistribuidor.value = json[i].distribuidorgrupotrabajo.distribuidor;
 
 
 
@@ -417,9 +426,14 @@ btnsearch.addEventListener('click', () => {
                         divBaseForm.appendChild(divDistribuidorGrupoTrabajo)
                     }
                 }
-
+                
                 form.insertBefore(divBaseForm,elementofinal);
-            }          
+              
+                }
+
+                
+                 
+            } 
             
         }
     };   

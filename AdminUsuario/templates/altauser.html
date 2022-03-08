@@ -2,8 +2,17 @@
 
 {% block content %}
 
-<div class="container pt-4">
-    <form id="forminsert" action="http://localhost:5000/insertarusuario" method="POST">
+<div class="container p-5">
+    <form id="forminsert" method="POST">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h3">Crear Usuario</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="btn-group me-2">
+                <input class="btn btn-outline-success" type="submit" value="Registrar">
+                <a class="btn btn-outline-success" id="regresar" role="button">Regresar</a>
+              </div>
+            </div>
+        </div>
         <div class="mb-3">
             <label for="inputPassword" class=" col-form-label">Nombre usuario</label>
             <input type="text" class="form-control" name="username">
@@ -24,14 +33,10 @@
             <p id="msg_error" class="msg_error text-danger"></p>
         {% endif %}
         {% endwith %}
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <input class="btn btn-primary" type="submit" value="Registrar">
-            <a class="btn btn-success" href="{{ url_for('listausuarios') }}" role="button">Regresar</a>
-        </div>
   </form>
 </div>
 
-    <a href="{{ url_for('listausuarios') }}"></a>
+    <a id="return"></a>
 
 
     <script type='text/javascript' src="{{ url_for('static', filename='js/altausuario.js') }}"></script>

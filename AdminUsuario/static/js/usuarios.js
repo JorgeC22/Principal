@@ -1,8 +1,16 @@
 window.onload=function(){
+    let ruta = window.location.pathname;
+
+    let btnAgregar = document.getElementById('agregar');
+    btnAgregar.setAttribute("onclick","location.href='http://127.0.0.1:5000"+ruta+"/altausuario';")
+
+    let btnModificar = document.getElementById('modificar');
+    btnModificar.setAttribute("onclick","location.href='http://127.0.0.1:5000"+ruta+"/modificarUsuario';")
+
     usuarios();
     function usuarios(){
         var xhttp = new XMLHttpRequest();
-        xhttp.open('GET','http://127.0.0.1:5000/consultausuarios', true);
+        xhttp.open('GET','http://127.0.0.1:5000/'+ruta+'/consultausuarios', true);
         xhttp.send();
         xhttp.onreadystatechange = function(){
             if(this.readyState==4 && this.status==200){
@@ -14,7 +22,7 @@ window.onload=function(){
 
                 for(var i of encabezado){
                     var columna = document.createElement("th");
-                    columna.setAttribute("scope","col")
+                    columna.setAttribute("style","color:white")
                     var texto = document.createTextNode(i);
                     columna.appendChild(texto);
                     document.getElementById("encabezado").appendChild(columna);
@@ -64,9 +72,9 @@ window.onload=function(){
                     var celda = document.createElement("td");
                     var btn = document.createElement("button");
                     btn.setAttribute("type","button");
-                    btn.setAttribute("class","btn btn-sm btn-outline-secondary");
+                    btn.setAttribute("class","btn btn-sm btn-primary");
                     btn.setAttribute("id","editar"+json[i].id_usuario);
-                    btn.setAttribute("onclick","location.href='http://127.0.0.1:5000/"+json[i].id_distribuidor_grupotrabajo+"/actualizarRegistro';")
+                    btn.setAttribute("onclick","location.href='http://127.0.0.1:5000"+ruta+"/"+json[i].id_distribuidor_grupotrabajo+"/actualizarRegistro';")
                     celda.appendChild(btn);
                     var texto = document.createTextNode("Editar");
                     btn.appendChild(texto);
@@ -75,11 +83,11 @@ window.onload=function(){
                     //Celda de Boton para eliminar
                     var celda = document.createElement("td");
                     var form = document.createElement("form");
-                    form.setAttribute('action', 'http://127.0.0.1:5000/eliminarDistribuidorGrupotrabajo');
+                    form.setAttribute('action', 'http://127.0.0.1:5000'+ruta+'/eliminarDistribuidorGrupotrabajo');
                     form.setAttribute('method', 'POST');
                     celda.appendChild(form);
                     var btn = document.createElement("button");
-                    btn.setAttribute("class","btn btn-sm btn-outline-secondary");
+                    btn.setAttribute("class","btn btn-sm btn-danger");
                     btn.setAttribute('name', 'identificador');
                     btn.setAttribute('value', json[i].id_distribuidor_grupotrabajo)
                     form.appendChild(btn);
