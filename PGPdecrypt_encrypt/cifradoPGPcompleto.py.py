@@ -7,6 +7,7 @@ import scp
 #proceso encargado de verificar si existen archivos y extraerlos hacia la maquina local.
 def extracccion():
     print('Buscando Archivos........................')
+    ruta = '/home/ubuntu'
     #Se crea un objeto SSH cliente para realizar la conexion con la instancia.
     session = paramiko.SSHClient()
     session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -17,8 +18,8 @@ def extracccion():
 
     #Se realiza la conexion con la instancia implementando la clave SSH.
     session.connect(
-        hostname='ec2-3-143-69-212.us-east-2.compute.amazonaws.com',
-        username='ubuntu',
+        hostname='',
+        username='',
         pkey=key_file,
         allow_agent=False,
         look_for_keys=False
@@ -28,7 +29,7 @@ def extracccion():
     sftp_client = session.open_sftp()
 
     #Se verifica existan archvios sobre el directorio indicado.
-    list = sftp_client.listdir('/home/ubuntu/carpetaArchivosPGP')
+    list = sftp_client.listdir(ruta+'/carpetaArchivosPGP')
     list2 = []
     
     #Si se obtiene una lista de nombres de archivos se aplica un filtro para obtener solamente archivos con extension .PGP y se crea nueva lista. 
@@ -44,7 +45,7 @@ def extracccion():
         print('Existe archivos a cifrar.')
         print('Extrallendo Archivos......................')
         for x in list2:
-            sftp_client.get('/home/ubuntu/carpetaArchivosPGP'+x,'./ArchivoRecibidos/'+x) #Copia de archivos a maquina local.
+            sftp_client.get(ruta+'/carpetaArchivosPGP'+x,'./ArchivoRecibidos/'+x) #Copia de archivos a maquina local.
             stdin,stdout,stderr = session.exec_command("rm /home/ubuntu/carpetaArchivosPGP"+x) #elimina en la instancia/servior remoto los archivos ya extraidos.
         print('Archivos Extraidos.')
         extraccion = True
@@ -133,12 +134,12 @@ def envioArchivos():
             session.load_system_host_keys()
 
             #Se lee y almacena en la variable key_file la clave SSH sobre la intancia a conectar.
-            key_file = paramiko.RSAKey.from_private_key_file('C:/Users/beto_/Documents/ServicioSocial/SSHconection/id_rsa','holamundo')
+            key_file = paramiko.RSAKey.from_private_key_file('ruta/nombre del archivo clave ssh')
             
             #Se realiza la conexion con la instancia implementando la clave SSH.
             session.connect(
-                hostname='ec2-3-143-69-212.us-east-2.compute.amazonaws.com',
-                username='ubuntu',
+                hostname='',
+                username='',
                 pkey=key_file,
                 allow_agent=False,
                 look_for_keys=False
@@ -146,7 +147,8 @@ def envioArchivos():
             #Se inicia sesion SCP cliente para el transporte de archivos.
             with scp.SCPClient(session.get_transport()) as scps:
                 for file in archivos:
-                    scps.put(ruta+'/ArchivoParaEnviar/'+file, '/home/ubuntu/carpetaEnvioPGP/'+file) # Copia del archivo a la instancia/servidor.
+                    scps.put(ruta+'/ArchivoParaEnviar/'+file, '/home/ubuntu/carpetaEnvioPGP/'+file) # Copia del archivo a la instancia/servidor en la carpeta de envio.
+                    scps.put(ruta+'/ArchivoParaEnviar/'+file, '/home/ubuntu/posteo/'+file) # Copia del archivo a la instancia/servidor en la carpeta de posteo.
                     os.remove(ruta+'/ArchivoParaEnviar/'+file) #Se elimina el archivo que ya fue copiado en la instancia/servidor.
                 print('Archivos enviados.')
                 envio = True #indica si el envio de archivos se ejecuto correactamente.
@@ -174,8 +176,8 @@ def exeCommand():
 
         #Se realiza la conexion con la instancia implementando la clave SSH.
         session.connect(
-            hostname='ec2-3-143-69-212.us-east-2.compute.amazonaws.com',
-            username='ubuntu',
+            hostname='',
+            username='',
             pkey=key_file,
             allow_agent=False,
             look_for_keys=False

@@ -20,9 +20,9 @@ def envioArchivostoka():
             
             #Se realiza la conexion con la instancia implementando la clave SSH.
             session.connect(
-                hostname='192.168.119.3',
-                username='alquimia',
-                password='Ggs1iIA0DMA9'    
+                hostname='',
+                username='',
+                password=''    
             )
             
             #Se crea una instaciona de SCP cliente para el transporte de archivos.
