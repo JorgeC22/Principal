@@ -4,11 +4,18 @@ body {
 }
 
 body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.base_contenedor {
   display: flex;
   align-items: center;
   padding-top: 40px;
   padding-bottom: 40px;
   background-color: #f5f5f5;
+  height: 600px;
 }
 
 .form-signin {

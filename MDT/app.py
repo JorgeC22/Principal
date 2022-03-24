@@ -14,8 +14,8 @@ app.secret_key = 'dont tell anyone'
 login_manager_app = LoginManager(app)
 
 @login_manager_app.user_loader
-def load_user(nombre_usuario):
-    return get_by_id(nombre_usuario)
+def load_user(id):
+    return get_by_id(id)
 
 @app.route("/")
 def inicio():
@@ -23,15 +23,20 @@ def inicio():
 
 @app.route("/login", methods = ['POST'])
 def login():
-    usuariologin = usuario(None,request.form['nombre_usuario'],request.form['contraseña'])
-    login = login_usuario(usuariologin)
-    if login:
-        login_user(usuariologin)
-        session['usuario'] = request.form['nombre_usuario']
+    logger_user = loggin_user(request.form['username'],request.form['password'])
+    if logger_user != None:
+        login_user(logger_user)
+        session['usuario'] = request.form['username']
         return redirect('/home')
-    else: 
+    else:
+        flash("Error: El usuario o la contraseña esta mal.")
         return redirect('/')
-    return render_template('login.html')
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    session.clear()
+    return redirect('/')
 
 @app.route("/home")
 @login_required
@@ -46,7 +51,7 @@ def upload():
         if os.path.exists('./archivos/'+file.filename):
             executor.submit(long_task, file)
             flash("Archivo subido exitosamente")
-            return redirect('/')
+            return redirect('/home')
 
 # Tarea que requiere mucho tiempo
 def long_task(arg1):
@@ -54,7 +59,7 @@ def long_task(arg1):
     
 @app.errorhandler(401)
 def status_401(error):
-    return redirect('/')
+    return render_template('privacidad.html'), 404
 
 @app.errorhandler(404)
 def status_404(error):

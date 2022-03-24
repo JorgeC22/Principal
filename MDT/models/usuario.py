@@ -5,7 +5,7 @@ from conexion import *
 
 class usuario(UserMixin):
 
-    def __init__(self, id_usuario, nombre_usuario, contraseña) -> None:
+    def __init__(self, id_usuario, nombre_usuario, passs) -> None:
         self.id = id_usuario
-        self.username = nombre_usuario
-        self.password = contraseña
+        self.nombre_usuario = nombre_usuario
+        self.passs = passs

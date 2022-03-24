@@ -1,3 +1,4 @@
+from cgi import print_arguments
 from openpyxl import load_workbook
 from datetime import datetime
 from conexion import *
@@ -69,32 +70,59 @@ def main(archivo):
 
 def login_usuario(usuario):
     conexion = dbUsuario()
-    with conexion.cursor(dictionary = True) as cursor:
-        cursor.execute("select * from usuarios where nombre_usuairo = '"+usuario.nombre_usuario+"'")
-        ruta_usuarios = cursor.fetchone()
-        if ruta_usuarios:
-            for x in ruta_usuarios:
-                passUsuario = usuario.contraseña.encode("utf-8")
-                passBD = x[2].encode("utf-8")
+    with conexion.cursor() as cursor:
+        cursor.execute("select * from usuarios where nombre_usuario = '"+usuario.nombre_usuario+"'")
+        datausuario = cursor.fetchall()
+        print(datausuario)
+        if datausuario:
+            for x in datausuario:
+                p = str(usuario.passs)
+                print(p)
+                passUsuario = p.encode("utf-8")
+                print(passUsuario)
+                p2 = str(x[2])
+                print(p2)
+                passBD = p2.encode("utf-8")
+                print(passBD)
 
-                if x[1] == usuario.nombre_usuario and bcrypt.checkpw(passBD, passUsuario) :
+                if x[1] == usuario.nombre_usuario and bcrypt.checkpw(passUsuario, passBD):
+                    print("EXISTE")
                     loginVericado = True
                 else:
+                    print("NO EXISTE")
                     loginVericado = False
         else:
             loginVericado = False
     
     return loginVericado
 
-def get_by_id(nombre_usuario):
-        try:
-            conexion = dbUsuario()
-            cur = conexion.cursor()
-            cur.execute("select * from usuarios where nombre_usuario = '"+nombre_usuario+"'")
-            row = cur.fetchone()
-            if row != None:
-                return usuario(row[0], row[1], None)
+
+def loggin_user(username, password):
+    password = password.encode("utf-8")
+    conexxion = dbUsuario()
+    with conexxion.cursor() as cursor:
+        cursor.execute("select * from usuarios where nombre_usuario = '"+username+"'")
+        userdata = cursor.fetchall()
+        for x in userdata:
+            pass_BD = x[2].encode("utf-8")
+            if x[1] == username and bcrypt.checkpw(password, pass_BD):
+                #permiso = { "acceso": "true", "empresa": x[3] }
+                user = usuario(x[0],x[1],x[2])
+                break
             else:
-                return None
-        except Exception as ex:
-            raise Exception(ex)
+                #permiso = { "acceso": "false", "empresa": None }
+                user = None
+    return user
+
+def get_by_id(id):
+    try:
+        conexion = dbUsuario()
+        cur = conexion.cursor()
+        cur.execute("select * from usuarios where id_usuario = '"+id+"'")
+        row = cur.fetchone()
+        if row != None:
+            return usuario(row[0], row[1], None)
+        else:
+            return None
+    except Exception as ex:
+        raise Exception(ex)
