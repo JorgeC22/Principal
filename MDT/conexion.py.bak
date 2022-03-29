@@ -5,11 +5,11 @@ class dbMDT():
     def __init__(self):
         try:
             self.conn = mariadb.connect(
-                user="",
-                password="",
-                host="",
-                port= ,
-                database="",
+                user="root",
+                password="12345",
+                host="localhost",
+                port= 3307,
+                database="mdt",
                 autocommit=True
             )
         except mariadb.Error as e:
