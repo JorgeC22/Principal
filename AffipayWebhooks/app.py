@@ -1,43 +1,31 @@
-from flask import Flask, render_template, request, flash, redirect, session
-from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-from concurrent.futures import ThreadPoolExecutor
+from flask import Flask, request, render_template, redirect
+import mariadb
 from controlador import *
-import os
-from models.usuario import usuario
+from conexion import *
 
-# Crear ejecutor de grupo de subprocesos
-executor = ThreadPoolExecutor(2)
 
 app = Flask(__name__)
-app.secret_key = 'dont tell anyone'
+
+@app.route('/webhook/<ruta>/', methods=['POST'])
+def insert_json(ruta):
+    ruta_usuario = existeRuta(ruta)
+    if ruta_usuario != None:
+        request_data = request.get_json()
+        id_comercio = ruta
+        bin = request_data['reference']
+        lastFour = request_data['lastFour']
+        mydb1 = mydb()
+        conn = mydb1.cursor()
+        conn.execute("INSERT INTO usuarios (id_comercio, bin, lastFour) VALUES ('%s', %s, '%s')"% (id_comercio,bin,lastFour))
+        mydb1.commit()
+    return 'Si existe'
 
 
-@app.route("/<comercio>")
-#@login_required
-def comercio():
-    return render_template('home.html')
 
-@app.route("/upload", methods = ['POST'])
-def upload():
-    if request.method == 'POST':
-        file = request.files['archivo']
-        file.save(os.path.join(os.path.join(os.getcwd(), 'archivos'), file.filename))
-        if os.path.exists('./archivos/'+file.filename):
-            executor.submit(long_task, file)
-            flash("Archivo subido exitosamente")
-            return redirect('/home')
 
-# Tarea que requiere mucho tiempo
-def long_task(arg1):
-    main(arg1)
-    
 @app.errorhandler(401)
 def status_401(error):
-    return render_template('privacidad.html'), 404
-
-@app.errorhandler(404)
-def status_404(error):
-    return redirect('/')
+    return 'error'
 
 if __name__== "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
