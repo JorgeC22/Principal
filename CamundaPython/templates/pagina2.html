@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="http://127.0.0.1:5000" method="post">
+        <input type="hidden" name="idproceso" value="{{data.idproceso}}">
+        <label for="">Nombre</label>
+        <input type="text" name="nombre" value="{{data.nombre}}">
+        <label for="">Apellido Paterno</label>
+        <input type="text" name="apellidoP" value="{{data.paterno}}">
+        <label for="">Apellido Materno</label>
+        <input type="text" name="apellidoM" value="{{data.materno}}">
+        
+        <button type="submit" formaction="/acceso" name="verificar" value="True">Aceptar</button>
+        <button type="submit" formaction="/acceso2" name="verificar" value="False">Rechazar</button>
+    </form>
+</body>
+</html>
