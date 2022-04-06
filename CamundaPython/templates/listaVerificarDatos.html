@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>APaterno</th>
+            <th>AMaterno</th>
+            <th>Empresa</th>
+        </tr>
+        {% for p in data %}
+            <tr>
+                <form action="{{url_for('pagina2')}}" method="POST">
+                    <td>{{p.nombre}}</td>
+                    <td>{{p.paterno}}</td>
+                    <td>{{p.materno}}</td>
+                    <td>{{p.empresa}}</td>
+                    <td><button type="submit" name="idproceso" value="{{p.idproceso}}">Abrir</button></td>
+                </form>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

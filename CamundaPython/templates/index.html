@@ -7,7 +7,8 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="{{ url_for('pagina1') }}" method="post">
+    <form action="{{ url_for('iniciarProceso', empresa=data) }}" method="post">
+        
         <label for="">Nombre</label>
         <input type="text" name="nombre">
         <label for="">Apellido Paterno</label>
