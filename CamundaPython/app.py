@@ -17,11 +17,12 @@ def iniciarProceso(empresa):
     idproceso = controlador.inicioProceso(request.form['nombre'],request.form['apellidoP'],request.form['apellidoM'],empresa)
     #datosP = controlador.getVariablesProceso(idproceso)
     #return render_template('pagina1.html', data=datosP)
-    return "Sus datos fueron enviados correctamente."
+    return render_template('variablesAceptado.html')
 
 @app.route("/pagina2", methods = ['POST'])
 def pagina2():
     datosP = controlador.getVariablesProceso(request.form['idproceso'])
+    datosP = controlador.getProcesoActividad(datosP)
     return render_template('pagina2.html', data=datosP)
 
 @app.route("/listaVerificarDatos")
@@ -33,28 +34,38 @@ def listaVerificarDatos():
 
 @app.route("/acceso", methods = ['POST'])
 def acceso():
-    data = controlador.getVariablesProceso(request.form['idproceso'])
-    data['verificacion'] = request.form['verificar']
-    print(data)
+    #data = controlador.getVariablesProceso(request.form['idproceso'])
+    data = controlador.jsonParametros(
+        request.form['idproceso'],
+        request.form['nombre'],
+        request.form['apellidoP'],
+        request.form['apellidoM'],
+        request.form['empresa'],
+        request.form['verificar']
+    )
+    #data['verificacion'] = request.form['verificar']
+    #print(data)
     idtask = controlador.gettask(request.form['idproceso'])
     controlador.CompleteTask(idtask,data)
-    return "Variables Aceptados"
-    #return request.form['verificar']
+    return render_template('variablesAceptado.html')
 
 @app.route("/acceso2", methods = ['POST'])
 def acceso2():
-    data = controlador.getVariablesProceso(request.form['idproceso'])
-    data['verificacion'] = request.form['verificar']
-    print(data)
+    data = controlador.jsonParametros(
+        request.form['idproceso'],
+        request.form['nombre'],
+        request.form['apellidoP'],
+        request.form['apellidoM'],
+        request.form['empresa'],
+        request.form['verificar']
+    )
+    #data = controlador.getVariablesProceso(request.form['idproceso'])
+    #data['verificacion'] = request.form['verificar']
+    #print(data)
     idtask = controlador.gettask(request.form['idproceso'])
     controlador.CompleteTask(idtask,data)
-    return "Variables Rechazados"
+    return render_template('variablesAceptado.html')
 
-
-@app.route("/taskexternall")
-def taskexternall():
-    hola = controlador.taskexternall()
-    return "Tarea Externa Realizada"
 
 
 if __name__== "__main__":
