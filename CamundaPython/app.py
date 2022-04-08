@@ -6,17 +6,18 @@ import controlador
 app = Flask(__name__)
 
 
-
 @app.route("/<empresa>")
-def index(empresa):
+def formulario1(empresa):
     #flash('Mensaje de prueba!')
     return render_template('index.html', data=empresa)
 
 @app.route("/<empresa>/iniciarProceso", methods = ['POST'])
 def iniciarProceso(empresa):
-    idproceso = controlador.inicioProceso(request.form['nombre'],request.form['apellidoP'],request.form['apellidoM'],empresa)
+    idproceso = controlador.inicioProceso(request.form,empresa)
     #datosP = controlador.getVariablesProceso(idproceso)
     #return render_template('pagina1.html', data=datosP)
+    #form_data = request.form
+    #print(form_data['nombre'])
     return render_template('variablesAceptado.html')
 
 @app.route("/pagina2", methods = ['POST'])
@@ -29,7 +30,7 @@ def pagina2():
 def listaVerificarDatos():
     procesos = controlador.getProcesos()
     listVarP = controlador.getlistVariablesProceso(procesos)
-    listP = controlador.getactividadProceso(listVarP)
+    listP = controlador.getactividadProcesos(listVarP)
     return render_template('listaVerificarDatos.html', data=listP)
 
 @app.route("/acceso", methods = ['POST'])
