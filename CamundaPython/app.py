@@ -1,4 +1,4 @@
-from ctypes.wintypes import INT
+from urllib import response
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import controlador
 
@@ -13,18 +13,47 @@ def formulario1(empresa):
 
 @app.route("/<empresa>/iniciarProceso", methods = ['POST'])
 def iniciarProceso(empresa):
-    idproceso = controlador.inicioProceso(request.form,empresa)
+    form_data = request.form.to_dict()
+    form_data['empresa'] = empresa
+    idproceso = controlador.inicioProceso(form_data)
     #datosP = controlador.getVariablesProceso(idproceso)
     #return render_template('pagina1.html', data=datosP)
-    #form_data = request.form
-    #print(form_data['nombre'])
+    print(form_data)
     return render_template('variablesAceptado.html')
 
-@app.route("/pagina2", methods = ['POST'])
-def pagina2():
-    datosP = controlador.getVariablesProceso(request.form['idproceso'])
+
+#@app.route("/pagina2", methods = ['POST'])
+#def pagina2():
+#    datosP = controlador.getVariablesProceso(request.form['idproceso'])
+#    datosP = controlador.getProcesoActividad(datosP)
+#    return render_template('pagina2.html', data=datosP)
+
+
+@app.route("/pagina2/<idproceso>")
+def pagina2(idproceso):
+    return render_template('pagina2.html')
+
+@app.route("/consultaVariables/<idproceso>", methods=['GET'])
+def consultaVariables(idproceso):
+    #datosP = controlador.getVariablesProceso(idproceso)
+    datosP = controlador.getVariablesProceso(idproceso)
     datosP = controlador.getProcesoActividad(datosP)
-    return render_template('pagina2.html', data=datosP)
+    response = jsonify(datosP)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+"""
+@app.route("/consultaVariables/<empresa>")
+def consultaVariables(empresa):
+    #datosP = controlador.getVariablesProceso(idproceso)
+    InstanciasProc = controlador.getProcesos()
+    Proceso = controlador.extraerInstancia()
+    listVarP = controlador.getlistVariablesProceso(InstanciasProc)
+    Proceso = ext
+    response = jsonify(datosP)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+"""
 
 @app.route("/listaVerificarDatos")
 def listaVerificarDatos():

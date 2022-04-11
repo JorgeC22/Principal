@@ -17,19 +17,26 @@
             <th>Empresa</th>
             <th>Tarea</th>
         </tr>
+        <tbody>
         {% for p in data %}
             <tr>
-                <form action="{{url_for('pagina2')}}" method="POST">
-                    <td>{{p.idproceso}}</td>
-                    <td>{{p.nombre}}</td>
-                    <td>{{p.paterno}}</td>
-                    <td>{{p.materno}}</td>
-                    <td>{{p.empresa}}</td>
-                    <td>{{p.tarea}}</td>
-                    <td><button type="submit" class="btn btn-primary" name="idproceso" value="{{p.idproceso}}">Abrir</button></td>
-                </form>
+                <td>{{p.idproceso}}</td>
+                <td>{{p.nombre}}</td>
+                <td>{{p.paterno}}</td>
+                <td>{{p.materno}}</td>
+                <td>{{p.empresa}}</td>
+                <td>{{p.tarea}}</td>
+                <td><a id="btnOpenP" class="btn btn-primary" href=" http://127.0.0.1:5000/pagina2/{{p.idproceso}}">Abrir Instancia</a></td>
+                
+                <!--<td>
+                    <form action="" method="POST">
+                        <button type="submit" class="btn btn-primary" name="idproceso" value="{{p.idproceso}}">Abrir</button>
+                    </form>
+                </td>
+                -->
             </tr>
         {% endfor %}
+        </tbody>
     </table>
 
     

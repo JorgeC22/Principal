@@ -10,27 +10,28 @@
 <body>
 
     <div class="base_form" style="width: 400px; height: 500px; margin-top: 50px;">
-        <form action="http://127.0.0.1:5000" method="post">
-            <input type="hidden" name="idproceso" value="{{data.idproceso}}">
+        <form id="form_aceptarVariables" action="" method="post">
+            <input type="hidden" name="idproceso" id="idproceso">
             <div class="form-floating mb-3">
-                <input type="text" name="nombre" value="{{data.nombre}}" class="form-control" id="floatingInput" >
+                <input type="text" name="nombre" class="form-control" id="nombre" >
                 <label for="floatingInput">Nombre</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="text" name="apellidoP" value="{{data.paterno}}" class="form-control" id="floatingInput" >
+                <input type="text" name="apellidoP" class="form-control" id="apellidoP" >
                 <label for="floatingPassword">Apellido Paterno</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="text" name="apellidoM" value="{{data.materno}}" class="form-control" id="floatingInput" >
+                <input type="text" name="apellidoM" class="form-control" id="apellidoM" >
                 <label for="floatingPassword">Apellido Materno</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="text" name="empresa" value="{{data.empresa}}" class="form-control" id="floatingInput" readonly>
+                <input type="text" name="empresa" class="form-control" id="empresa" readonly>
                 <label for="floatingPassword">Empresa</label>
             </div>
-            <input type="hidden" value="{{data.actividad}}" id="actividad">
-            <button type="submit" class="btn btn-success" formaction="/acceso" name="verificar" value="True">Aceptar</button>
-            <button type="submit" class="btn btn-danger" formaction="/acceso2" name="verificar" value="False">Rechazar</button>
+            <input type="hidden" id="actividad">
+            <a class="btn btn-secondary" href="{{url_for('listaVerificarDatos')}}">Regresar</a>
+            <!--<button type="submit" id="btnAceptar" class="btn btn-success" formaction="/acceso" name="verificar" value="True">Aceptar</button>
+            <button type="submit" class="btn btn-danger" formaction="/acceso2" name="verificar" value="False">Rechazar</button>-->
         </form>
     </div>
 
@@ -38,5 +39,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    <script type='text/javascript' src="{{ url_for('static', filename='js/cambioButton.js') }}"></script>
 </body>
 </html>

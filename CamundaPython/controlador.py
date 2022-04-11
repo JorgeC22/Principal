@@ -7,14 +7,27 @@ import uuid
 import requests
 import json
 
-
-def inicioProceso(nombre,aPaterno,aMaterno,empresa):
+"""
+def inicioProceso(form_data,empresa):
     client = EngineClient()
-    resp_json = client.start_process(process_key="validando_de_datos", 
-        variables={"nombre": nombre, "paterno": aPaterno, "materno": aMaterno, "empresa": empresa}, tenant_id="", business_key="")
+    if form_data['formulario'] == "personal":
+        resp_json = client.start_process(process_key="validando_de_datos", 
+        variables={"nombre": form_data['nombre'], "paterno": form_data['apellidoP'], "materno": form_data['apellidoM'], "empresa": empresa, "formulario": form_data['formulario']}, tenant_id="", business_key="")
+        idproceso = resp_json['id']
+    elif form_data['formulario'] == "empresarial":
+        resp_json = client.start_process(process_key="validando_de_datos", 
+        variables={"nombre_empresa": form_data['nombre_empresa'], "mercado": form_data['mercado'], "estado": form_data['estado'], "empresa": empresa, "formulario": form_data['formulario']}, tenant_id="", business_key="")
+        idproceso = resp_json['id']
+    #print(idproceso)
+    return idproceso
+"""
+def inicioProceso(json_data):
+    client = EngineClient()
+    resp_json = client.start_process(process_key="validando_de_datos",variables= json_data)
     idproceso = resp_json['id']
     #print(idproceso)
     return idproceso
+
 
 def getProcesos():
     baseUrl = "http://localhost:8080/engine-rest/process-instance"
