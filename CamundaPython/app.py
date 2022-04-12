@@ -15,10 +15,10 @@ def formulario1(empresa):
 def iniciarProceso(empresa):
     form_data = request.form.to_dict()
     form_data['empresa'] = empresa
+    print(form_data)
     idproceso = controlador.inicioProceso(form_data)
     #datosP = controlador.getVariablesProceso(idproceso)
     #return render_template('pagina1.html', data=datosP)
-    print(form_data)
     return render_template('variablesAceptado.html')
 
 

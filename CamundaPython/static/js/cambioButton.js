@@ -33,51 +33,18 @@ window.onload=function(){
                 console.log(json.tarea)
                 if (json.tarea == "Verificar Datos"){
                     
-                    var btnAceptar = document.createElement("button");
-                    btnAceptar.setAttribute('type', 'submit');
-                    btnAceptar.setAttribute('id', 'btnAceptar');
-                    btnAceptar.setAttribute('class', 'btn btn-success');
-                    btnAceptar.setAttribute('formaction', '/acceso')
-                    btnAceptar.setAttribute('name', 'verificar'),
-                    btnAceptar.setAttribute('value', 'True')
-                    var texto = document.createTextNode("Aceptar Variables");
-                    btnAceptar.appendChild(texto);
+                    //var varEjemplo = boton(texto,formaction,name,value,class,id);
+                    var btnAceptar = boton("Aceptar Variables","/acceso","verificar","True","btn btn-success","btnAceptarVar");
+                    var btnRechazar = boton("Rechazar","/acceso2","verificar","False","btn btn-danger","btnRechazarVar");
 
-                    var btnRechazar = document.createElement("button");
-                    btnRechazar.setAttribute('type', 'submit');
-                    btnRechazar.setAttribute('id', 'btnAceptar');
-                    btnRechazar.setAttribute('class', 'btn btn-danger');
-                    btnRechazar.setAttribute('formaction', '/acceso2')
-                    btnRechazar.setAttribute('name', 'verificar'),
-                    btnRechazar.setAttribute('value', 'False')
-                    var texto = document.createTextNode("Rechazar");
-                    btnRechazar.appendChild(texto);
-
-
+                    //form_aceptarVariables.appendChild(btnAceptar);
                     form_aceptarVariables.appendChild(btnAceptar);
                     form_aceptarVariables.appendChild(btnRechazar);
                 } 
                 if (json.tarea == "Contrato Personal"){
                     
-                    var btnAceptar = document.createElement("button");
-                    btnAceptar.setAttribute('type', 'submit');
-                    btnAceptar.setAttribute('id', 'btnAceptar');
-                    btnAceptar.setAttribute('class', 'btn btn-success');
-                    btnAceptar.setAttribute('formaction', '/acceso')
-                    btnAceptar.setAttribute('name', 'verificar'),
-                    btnAceptar.setAttribute('value', 'True')
-                    var texto = document.createTextNode("Enviar Contrato");
-                    btnAceptar.appendChild(texto);
-
-                    var btnRechazar = document.createElement("button");
-                    btnRechazar.setAttribute('type', 'submit');
-                    btnRechazar.setAttribute('id', 'btnAceptar');
-                    btnRechazar.setAttribute('class', 'btn btn-danger');
-                    btnRechazar.setAttribute('formaction', '/acceso2')
-                    btnRechazar.setAttribute('name', 'verificar'),
-                    btnRechazar.setAttribute('value', 'False')
-                    var texto = document.createTextNode("Rechazar Contrato");
-                    btnRechazar.appendChild(texto);
+                    var btnAceptar = boton("Enviar Contrato","/acceso","verificar","True","btn btn-success","btnAceptarVar");
+                    var btnRechazar = boton("Rechazar Contrato","/acceso2","verificar","False","btn btn-danger","btnRechazarVar");
 
                     form_aceptarVariables.appendChild(btnAceptar);
                     form_aceptarVariables.appendChild(btnRechazar);
@@ -87,3 +54,17 @@ window.onload=function(){
         };
     }
 }
+
+//Funcion para la creacion de botones submit.
+function boton(texto,formaction,name,value,clase,id){
+    var btnAceptar = document.createElement("button");
+    btnAceptar.setAttribute('type', 'submit');
+    btnAceptar.setAttribute('id', id);
+    btnAceptar.setAttribute('class', clase);
+    btnAceptar.setAttribute('formaction', formaction)
+    btnAceptar.setAttribute('name', name),
+    btnAceptar.setAttribute('value', value)
+    var textoBtn = document.createTextNode(texto);
+    btnAceptar.appendChild(textoBtn);
+    return btnAceptar
+};
