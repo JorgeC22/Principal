@@ -2,7 +2,7 @@
 FROM python:3.8
 
 # By default, listen on port 5000
-EXPOSE 5000/tcp
+#EXPOSE 5000/tcp
 
 # Set the working directory in the container
 WORKDIR /app
@@ -14,4 +14,6 @@ ADD . /app
 RUN pip install -r requirements.txt
 
 # Specify the command to run on container start
-CMD [ "python", "./app.py" ]
+#CMD [ "python", "./app.py" ]
+
+ENTRYPOINT ["./gunicorn.sh"]
