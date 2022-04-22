@@ -6,28 +6,24 @@ import requests
 import json
 #ec2-54-188-33-247.us-west-2.compute.amazonaws.com:8080/
 
-host = "ec2-34-219-25-157.us-west-2.compute.amazonaws.com:8080"
+host = "ec2-3-13-107-86.us-east-2.compute.amazonaws.com:8001"
 
-"""
-def inicioProceso(form_data,empresa):
-    client = EngineClient()
-    if form_data['formulario'] == "personal":
-        resp_json = client.start_process(process_key="validando_de_datos", 
-        variables={"nombre": form_data['nombre'], "paterno": form_data['apellidoP'], "materno": form_data['apellidoM'], "empresa": empresa, "formulario": form_data['formulario']}, tenant_id="", business_key="")
-        idproceso = resp_json['id']
-    elif form_data['formulario'] == "empresarial":
-        resp_json = client.start_process(process_key="validando_de_datos", 
-        variables={"nombre_empresa": form_data['nombre_empresa'], "mercado": form_data['mercado'], "estado": form_data['estado'], "empresa": empresa, "formulario": form_data['formulario']}, tenant_id="", business_key="")
-        idproceso = resp_json['id']
-    #print(idproceso)
-    return idproceso
-"""
 def inicioProceso(json_data):
-    client = EngineClient()
-    resp_json = client.start_process(process_key="validando_de_datos",variables= json_data)
-    idproceso = resp_json['id']
-    #print(idproceso)
-    return idproceso
+    baseUrl = "http://"+host+"/engine-rest/process-definition/key/Process_0w2618a/start"
+    data = {
+        "variables": json_data
+    }
+    print(data)
+
+    for d in data['variables']:
+        var = {"value": data['variables'][d],"type": "string"}
+        data['variables'][d] = var
+
+    respuesta = requests.post(baseUrl, json=data)
+    instanciaProceso = respuesta.json()
+    print(instanciaProceso)
+
+    
 
 
 def getProcesos():

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-#import controlador
+import controlador
 
 
 app = Flask(__name__)
@@ -10,12 +10,15 @@ def index():
     #flash('Mensaje de prueba!')
     return render_template('index.html')
 
-@app.route("/registro", methods=['POST'])
+@app.route("/registro")
 def registro():
-    form_data = request.form.to_dict()
-    print(form_data)
-    #flash('Mensaje de prueba!')
-    return redirect(url_for('index'))
+    return render_template('cargaDocumentos.html')
+
+@app.route("/registro", methods=['POST'])
+def cargaDocumentos():
+    form_documentos = request.form.to_dict()
+    idproceso = controlador.inicioProceso(form_documentos)
+    return "Se cargaron los documentos."
 
 
 @app.route("/listaInstancias", methods=['POST'])
