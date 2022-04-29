@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="{{ url_for('json') }}" method="post">
+        <div>
+            <label for="">Acta Constitutiva</label>
+            <input type="hidden" name="acta" value="Acta Constitutiva">
+            <input type="text" name="acta">
+            <input type="radio" name="acta" id="acta" value="aprobado">
+            <input type="radio" name="acta" id="acta" value="rechazado">
+        </div>
+        <div>
+            <label for="">Carta Legal</label>
+            <input type="hidden" name="carta" value="Carta Legal">
+            <input type="text" name="carta">
+            <input type="radio" name="carta" id="carta" value="aprobado">
+            <input type="radio" name="carta" id="carta" value="rechazado">
+        </div>
+        <div>
+            <label for="">Comprobante</label>
+            <input type="hidden" name="comprobante" value="Comprobante">
+            <input type="text" name="comprobante">
+            <input type="radio" name="comprobante" id="comprobante" value="aprobado">
+            <input type="radio" name="comprobante" id="comprobante" value="rechazado">
+        </div>
+        <input type="hidden" name="idproceso" id="" value="{{ idproceso }}">
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>

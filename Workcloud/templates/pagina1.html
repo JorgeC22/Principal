@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    Datos del proceso en revision.
+    <!--
+    <form action="{{url_for('acceso')}}" method="post">
+        <label for="">Nombre</label>
+        <input type="text" name="nombre" value="{{ data }}">
+        <label for="">Apellido Paterno</label>
+        <input type="text" name="apellidoP" value="{{ data }}">
+        <label for="">Apellido Materno</label>
+        <input type="text" name="apellidoM" value="{{ data }}">
+        <button type="submit">Completar Tarea</button>
+    </form>
+    -->
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>APaterno</th>
+            <th>AMaterno</th>
+        </tr>
+        <tr>
+            <form action="{{url_for('pagina2')}}" method="POST">
+                <td>{{data.nombre}}</td>
+                <td>{{data.paterno}}</td>
+                <td>{{data.materno}}</td>
+                <td><button type="submit" name="idproceso" value="{{data.idproceso}}">Abrir</button></td>
+            </form>
+        </tr>
+    </table>
+</body>
+</html>
